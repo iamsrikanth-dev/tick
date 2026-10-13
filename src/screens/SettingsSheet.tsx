@@ -70,8 +70,8 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
     <Sheet open={open} title="Settings" onClose={close}>
       <section className="section">
         <h3 className="section-title">Security</h3>
-        <div className="group" style={{ padding: 14, gap: 10 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="group group-pad">
+          <span className="row-title">
             <LockIcon />
             <span className="grow">Lock after inactivity</span>
           </span>
@@ -87,12 +87,12 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
             ]}
           />
         </div>
-        <div className="group" style={{ padding: 14, gap: 10 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="group group-pad">
+          <span className="row-title">
             <ClipboardIcon />
             <span className="grow">
               Clear copied codes
-              <span className="caption" style={{ display: 'block' }}>
+              <span className="small" style={{ display: 'block', fontWeight: 450 }}>
                 Works while Tick is the active tab
               </span>
             </span>
@@ -200,7 +200,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
             </Reveal>
           )}
         </AnimatePresence>
-        <p className="caption" style={{ margin: 0 }}>
+        <p className="small" style={{ margin: 0 }}>
           Codes are generated on this device. Your vault is encrypted with AES-256 using a key derived from your master password,
           and it never leaves this browser.
         </p>

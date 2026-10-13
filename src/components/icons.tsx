@@ -156,13 +156,19 @@ export const WarningIcon = (p: IconProps) => (
   </Svg>
 );
 
-/** The Tick mark: a ring with a quarter already ticked away. */
+/** The Tick mark: an ink squircle holding a ring with a quarter already ticked away. */
 export function Mark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" className={className}>
-      <circle cx="16" cy="16" r="12" fill="none" stroke="var(--hairline)" strokeWidth="4" />
-      <path d="M16 4a12 12 0 1 1-12 12" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" />
-      <circle cx="16" cy="16" r="3" fill="var(--content)" />
+      <rect width="32" height="32" rx="10" fill="var(--ink)" />
+      <path d="M16 7.5a8.5 8.5 0 1 1-8.5 8.5" fill="none" stroke="var(--on-ink)" strokeWidth="3.2" strokeLinecap="round" />
+      <circle cx="16" cy="16" r="2.6" fill="var(--on-ink)" />
     </svg>
   );
 }
+
+export const ArrowIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </Svg>
+);

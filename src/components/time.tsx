@@ -14,10 +14,7 @@ export const Odometer = memo(function Odometer({ value, className = 'code' }: { 
             const digit = Number(char);
             return (
               <span className="odo-digit" key={i}>
-                <span
-                  className="odo-strip"
-                  style={{ transform: `translateY(${-digit * 1.2}em)`, transitionDelay: `${i * 22}ms` }}
-                >
+                <span className="odo-strip" style={{ transform: `translateY(${-digit * 1.1}em)`, transitionDelay: `${i * 30}ms` }}>
                   {DIGITS}
                 </span>
               </span>
@@ -48,34 +45,37 @@ function useStartOffset(period: number, remaining: number, counter: number): num
   return useMemo(() => period - remaining, [counter, period]);
 }
 
-/** Small countdown ring for a single account. Driven by CSS, so it costs nothing per frame. */
-export function Ring({ period, remaining, counter, ending }: CycleProps) {
+/** Countdown pill for a single account: a draining ring and the seconds left. */
+export function Timer({ period, remaining, counter, ending }: CycleProps) {
   const elapsed = useStartOffset(period, remaining, counter);
   return (
-    <svg className={`ring${ending ? ' ending' : ''}`} viewBox="0 0 24 24" aria-hidden="true">
-      <circle className="track" cx="12" cy="12" r="8" />
-      <circle
-        key={counter}
-        className="progress"
-        cx="12"
-        cy="12"
-        r="8"
-        style={{ animationDuration: `${period}s`, animationDelay: `${-elapsed}s` }}
-      />
-    </svg>
+    <span className={`timer${ending ? ' ending' : ''}`} aria-hidden="true">
+      <svg className="ring" viewBox="0 0 18 18">
+        <circle className="track" cx="9" cy="9" r="6" />
+        <circle
+          key={counter}
+          className="progress"
+          cx="9"
+          cy="9"
+          r="6"
+          style={{ animationDuration: `${period}s`, animationDelay: `${-elapsed}s` }}
+        />
+      </svg>
+      {Math.ceil(remaining)}s
+    </span>
   );
 }
 
-/** The shared tick rail under the top bar. */
-export function Rail({ period, remaining, counter, ending }: CycleProps) {
+/** The shared tick: one progress pill for the 30-second cycle most codes follow. */
+export function Tick({ period, remaining, counter, ending }: CycleProps) {
   const elapsed = useStartOffset(period, remaining, counter);
   return (
-    <div className="rail" aria-hidden="true">
-      <div
-        key={counter}
-        className={`rail-fill${ending ? ' ending' : ''}`}
-        style={{ animationDuration: `${period}s`, animationDelay: `${-elapsed}s` }}
-      />
+    <div className={`tick${ending ? ' ending' : ''}`} aria-hidden="true">
+      <span>New codes in</span>
+      <div className="tick-track">
+        <div key={counter} className="tick-fill" style={{ animationDuration: `${period}s`, animationDelay: `${-elapsed}s` }} />
+      </div>
+      <span className="tick-seconds">{Math.ceil(remaining)}s</span>
     </div>
   );
 }

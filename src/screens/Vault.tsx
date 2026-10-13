@@ -1,8 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CheckIcon, ClockIcon, CloseIcon, EditIcon, GearIcon, ImageIcon, KeyIcon, LinkIcon, LockIcon, Mark, PlusIcon, ScreenIcon, SearchIcon } from '../components/icons';
-import { Odometer, Rail, Ring } from '../components/time';
+import { CheckIcon, ClockIcon, CloseIcon, EditIcon, GearIcon, ImageIcon, LinkIcon, LockIcon, Mark, PlusIcon, ScreenIcon, SearchIcon } from '../components/icons';
+import { Odometer, Tick, Timer } from '../components/time';
 import { Monogram, softSpring, spring, useToast } from '../components/ui';
+import { EASE, gsap, pulse, useCountUp, useEntrance, useGSAP, withMotion } from '../gsap';
 import { useCodes, useIdleLock, useNow, type CodeState } from '../hooks';
 import { displayName, matchesQuery, sortAccounts } from '../lib/importers';
 import { counterAt, groupCode, secondsRemaining } from '../lib/totp';
@@ -14,6 +15,7 @@ import { EditSheet } from './EditSheet';
 import { SettingsSheet } from './SettingsSheet';
 
 const ENDING_SECONDS = 5;
+const compactQuery = () => window.matchMedia('(max-width: 600px)').matches;
 
 export function VaultScreen() {
   const vault = useVault();
@@ -31,20 +33,44 @@ export function VaultScreen() {
   const [editing, setEditing] = useState<Account | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const mobileSearchRef = useRef<HTMLInputElement>(null);
   const clipboardTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useIdleLock(data.settings.autoLockMinutes, lock);
 
+  const empty = data.accounts.length === 0;
   const sorted = useMemo(() => sortAccounts(data.accounts), [data.accounts]);
   const visible = useMemo(() => sorted.filter((a) => matchesQuery(a, query)), [sorted, query]);
   const sheetOpen = addSource !== null || editing !== null || settingsOpen;
 
+  const scope = useEntrance<HTMLElement>([empty]);
+  const countRef = useCountUp<HTMLSpanElement>(data.accounts.length);
+
+  // Cards rise in a stagger the first time the grid appears.
+  const gridRef = useRef<HTMLUListElement>(null);
+  useGSAP(
+    () => {
+      if (!gridRef.current) return;
+      withMotion(() => {
+        gsap.from(gridRef.current!.querySelectorAll('.card'), {
+          y: 48,
+          scale: 0.96,
+          autoAlpha: 0,
+          duration: 1.1,
+          ease: EASE,
+          stagger: 0.06,
+          delay: 0.35,
+          clearProps: 'transform,opacity,visibility',
+        });
+      });
+    },
+    { dependencies: [empty] },
+  );
+
   useEffect(() => setSelected(0), [query]);
 
   const copy = useCallback(
-    async (account: Account) => {
+    async (account: Account, card?: HTMLElement | null) => {
       const state = codes.get(account.id);
       if (!state) return;
       // In the last second, hand out the next code so it doesn't expire mid-paste.
@@ -55,9 +81,10 @@ export function VaultScreen() {
         toast({ title: 'Couldn’t copy', sub: 'Allow clipboard access for this site' });
         return;
       }
+      pulse(card ?? document.querySelector(`[data-account="${account.id}"] .card`));
       setCopiedId(account.id);
       clearTimeout(copiedTimer.current);
-      copiedTimer.current = setTimeout(() => setCopiedId(null), 1400);
+      copiedTimer.current = setTimeout(() => setCopiedId(null), 1600);
       const seconds = data.settings.clearClipboardSeconds;
       toast({ title: `Copied ${displayName(account)} code`, sub: seconds ? `Clears in ${seconds} s` : undefined });
       clearTimeout(clipboardTimer.current);
@@ -76,18 +103,18 @@ export function VaultScreen() {
     if (sheetOpen) return;
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      const inSearch = target === searchRef.current || target === mobileSearchRef.current;
+      const inSearch = target === searchRef.current;
       const typing = !inSearch && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
       if (typing) return;
       const mod = isMac ? e.metaKey : e.ctrlKey;
       if ((e.key === '/' && !inSearch) || (mod && e.key.toLowerCase() === 'k')) {
         e.preventDefault();
-        focusSearch();
-      } else if (e.key === 'ArrowDown') {
+        searchRef.current?.focus();
+      } else if (e.key === 'ArrowDown' || (e.key === 'ArrowRight' && !inSearch)) {
         e.preventDefault();
         setNavigating(true);
         setSelected((s) => Math.min(s + 1, visible.length - 1));
-      } else if (e.key === 'ArrowUp') {
+      } else if (e.key === 'ArrowUp' || (e.key === 'ArrowLeft' && !inSearch)) {
         e.preventDefault();
         setNavigating(true);
         setSelected((s) => Math.max(s - 1, 0));
@@ -101,113 +128,117 @@ export function VaultScreen() {
         setQuery('');
       } else if (!inSearch && !mod && !e.altKey && e.key.length === 1 && /\S/.test(e.key)) {
         // Typing anywhere starts a search; the keystroke lands in the field.
-        focusSearch();
+        searchRef.current?.focus();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [sheetOpen, visible, selected, copy, query]);
 
-  function focusSearch() {
-    const input = window.matchMedia('(max-width: 600px)').matches ? mobileSearchRef.current : searchRef.current;
-    input?.focus();
-  }
-
-  // Everything is usually on a 30 s cycle, so one shared rail tells the time for the whole list.
-  const railPeriod = 30;
-  const railRemaining = secondsRemaining(now, railPeriod);
-
-  const searchField = (ref: React.RefObject<HTMLInputElement | null>, autoFocus: boolean) => (
-    <div className="search">
-      <SearchIcon />
-      <input
-        ref={ref}
-        type="search"
-        placeholder="Search codes"
-        aria-label="Search codes"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        autoFocus={autoFocus}
-        autoComplete="off"
-        spellCheck={false}
-        enterKeyHint="go"
-      />
-      {query ? (
-        <button className="icon-btn clear" aria-label="Clear search" onClick={() => setQuery('')}>
-          <CloseIcon />
-        </button>
-      ) : (
-        <kbd className="kbd" aria-hidden="true">
-          /
-        </kbd>
-      )}
-    </div>
-  );
+  // Everything is usually on a 30 s cycle, so one shared tick tells the time for the whole grid.
+  const tickPeriod = 30;
+  const tickRemaining = secondsRemaining(now, tickPeriod);
 
   return (
     <div className="vault" onPointerMove={navigating ? () => setNavigating(false) : undefined}>
-      <header className="topbar">
-        <div className="topbar-inner">
-          <span className="mark">
-            <Mark />
-            Tick
-          </span>
-          <span className="spacer" />
-          {searchField(searchRef, !window.matchMedia('(max-width: 600px)').matches)}
-          <button className="icon-btn filled add-btn" onClick={() => setAddSource('screen')} aria-label="Add account" title="Add account">
-            <PlusIcon />
-          </button>
-          <button className="icon-btn" onClick={() => setSettingsOpen(true)} aria-label="Settings" title="Settings">
-            <GearIcon />
-          </button>
-          <button className="icon-btn" onClick={lock} aria-label="Lock" title="Lock">
-            <LockIcon />
-          </button>
-        </div>
-        {data.accounts.length > 0 ? (
-          <Rail period={railPeriod} remaining={railRemaining} counter={counterAt(now, railPeriod)} ending={railRemaining <= ENDING_SECONDS} />
-        ) : (
-          <div className="rail" aria-hidden="true" />
-        )}
-      </header>
+      <nav className="nav" aria-label="Tick">
+        <span className="brand">
+          <Mark />
+          Tick
+        </span>
+        <span className="spacer" />
+        <button className="btn btn-primary" onClick={() => setAddSource(compactQuery() ? 'camera' : 'screen')} aria-label="Add account">
+          <PlusIcon />
+          <span className="btn-label">Add account</span>
+        </button>
+        <button className="icon-btn" onClick={() => setSettingsOpen(true)} aria-label="Settings" title="Settings">
+          <GearIcon />
+        </button>
+        <button className="icon-btn" onClick={lock} aria-label="Lock" title="Lock">
+          <LockIcon />
+        </button>
+      </nav>
 
-      <main className="content">
+      <main className="page" ref={scope}>
+        {empty ? (
+          <EmptyVault onAdd={setAddSource} />
+        ) : (
+          <section className="hero">
+            <div className="hero-title">
+              <h1 className="display" data-reveal>
+                Your codes
+              </h1>
+              {/* Text is written by useCountUp so React and GSAP never fight over the node. */}
+              <span className="count" ref={countRef} data-rise aria-label={`${data.accounts.length} accounts`} />
+            </div>
+            <p className="lead" data-rise>
+              Start typing to find an account. Press Enter to copy its code.
+            </p>
+            <div className="search" data-rise>
+              <SearchIcon />
+              <input
+                ref={searchRef}
+                type="search"
+                placeholder="Search accounts"
+                aria-label="Search codes"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoFocus={!compactQuery()}
+                autoComplete="off"
+                spellCheck={false}
+                enterKeyHint="go"
+              />
+              {query ? (
+                <button className="icon-btn clear" aria-label="Clear search" onClick={() => setQuery('')}>
+                  <CloseIcon />
+                </button>
+              ) : (
+                <span className="kbd" aria-hidden="true">
+                  <kbd>{isMac ? '⌘' : 'Ctrl'}</kbd>
+                  <kbd>K</kbd>
+                </span>
+              )}
+            </div>
+            <div data-rise>
+              <Tick period={tickPeriod} remaining={tickRemaining} counter={counterAt(now, tickPeriod)} ending={tickRemaining <= ENDING_SECONDS} />
+            </div>
+          </section>
+        )}
+
         {vault.clockOffset !== 0 && (
           <div className="banner" role="status">
             <ClockIcon />
             <span>
-              This computer’s clock is {Math.round(Math.abs(vault.clockOffset) / 1000)} s {vault.clockOffset > 0 ? 'behind' : 'ahead'}. Tick is using
-              corrected time so your codes still work.
+              This computer’s clock is {Math.round(Math.abs(vault.clockOffset) / 1000)} s {vault.clockOffset > 0 ? 'behind' : 'ahead'}. Tick is
+              using corrected time so your codes still work.
             </span>
           </div>
         )}
 
-        {data.accounts.length === 0 ? (
-          <EmptyVault onAdd={setAddSource} />
-        ) : visible.length === 0 ? (
-          <motion.div className="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <SearchIcon className="icon" />
-            <p className="headline">No codes match “{query}”</p>
+        {!empty && visible.length === 0 && (
+          <motion.div className="empty" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
+            <p className="headline">No accounts match “{query}”</p>
             <p className="body">Check the spelling, or add this account.</p>
-            <button className="btn" onClick={() => setAddSource('screen')}>
+            <button className="btn btn-soft" onClick={() => setAddSource('screen')}>
               <PlusIcon />
               Add Account
             </button>
           </motion.div>
-        ) : (
-          <motion.ul className="list" initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.035 } } }}>
+        )}
+
+        {!empty && (
+          <ul className="grid" ref={gridRef}>
             <AnimatePresence initial={false}>
               {visible.map((account, i) => (
                 <motion.li
                   key={account.id}
                   layout={!reduced}
-                  variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
-                  initial="hidden"
-                  animate="show"
-                  exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.15 } }}
+                  initial={{ opacity: 0, scale: 0.94 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.18 } }}
                   transition={softSpring}
                 >
-                  <AccountRow
+                  <AccountCard
                     account={account}
                     state={codes.get(account.id)}
                     selected={(query !== '' || navigating) && i === selected}
@@ -218,30 +249,24 @@ export function VaultScreen() {
                 </motion.li>
               ))}
             </AnimatePresence>
-          </motion.ul>
+          </ul>
         )}
 
-        {data.accounts.length > 0 && (
+        {!empty && (
           <motion.div className="hints" aria-hidden="true" layout={!reduced} transition={softSpring}>
             <span>
-              <kbd>/</kbd>search
+              <kbd>/</kbd>Search
             </span>
             <span>
-              <kbd>↑↓</kbd>choose
+              <kbd>↑</kbd>
+              <kbd>↓</kbd>Choose
             </span>
             <span>
-              <kbd>↵</kbd>copy
+              <kbd>↵</kbd>Copy
             </span>
           </motion.div>
         )}
       </main>
-
-      <nav className="bottombar" aria-label="Search and add">
-        {searchField(mobileSearchRef, false)}
-        <button className="icon-btn filled" onClick={() => setAddSource('camera')} aria-label="Add account">
-          <PlusIcon />
-        </button>
-      </nav>
 
       <AddSheet source={addSource} onSourceChange={setAddSource} onClose={() => setAddSource(null)} />
       <EditSheet account={editing} onClose={() => setEditing(null)} />
@@ -250,60 +275,63 @@ export function VaultScreen() {
   );
 }
 
-interface RowProps {
+interface CardProps {
   account: Account;
   state: CodeState | undefined;
   selected: boolean;
   copied: boolean;
-  onCopy: (a: Account) => void;
+  onCopy: (a: Account, card?: HTMLElement | null) => void;
   onEdit: (a: Account) => void;
 }
 
-const AccountRow = memo(function AccountRow({ account, state, selected, copied, onCopy, onEdit }: RowProps) {
+const AccountCard = memo(function AccountCard({ account, state, selected, copied, onCopy, onEdit }: CardProps) {
   const name = displayName(account);
   const ending = !!state && state.remaining <= ENDING_SECONDS;
   const placeholder = '0'.repeat(account.digits);
   return (
-    <div className={`row${selected ? ' selected' : ''}`}>
+    <div className={`card-wrap${selected ? ' selected' : ''}`} data-account={account.id}>
       <button
-        className="row-main"
-        onClick={() => onCopy(account)}
+        className="card"
+        onClick={(e) => onCopy(account, e.currentTarget)}
         aria-label={`${name}${account.label && account.issuer ? `, ${account.label}` : ''}. Code ${groupCode(state?.current ?? '')}. Copy code`}
       >
-        <Monogram name={name} />
-        <span className="who">
-          <span className="issuer">{name}</span>
-          {account.issuer && account.label && <span className="label">{account.label}</span>}
-        </span>
-        <span className="code-wrap">
-          <span className="code-line">
-            <Odometer value={state?.current ?? placeholder} className={`code${copied ? ' copied' : ending ? ' ending' : ''}`} />
-            <span className="status">
-            <AnimatePresence initial={false}>
-              {copied ? (
-                <motion.span key="check" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={spring}>
-                  <CheckIcon className="check" />
-                </motion.span>
-              ) : (
-                <motion.span key="ring" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {state && <Ring period={account.period} remaining={state.remaining} counter={state.counter} ending={ending} />}
-                </motion.span>
-              )}
-            </AnimatePresence>
-            </span>
+        <span className="card-head">
+          <Monogram name={name} />
+          <span className="who">
+            <span className="issuer">{name}</span>
+            {account.issuer && account.label && <span className="account">{account.label}</span>}
           </span>
-          <span className="next mono" aria-hidden={!ending}>
+        </span>
+        <span>
+          <Odometer value={state?.current ?? placeholder} className={`code${copied ? ' copied' : ending ? ' ending' : ''}`} />
+          <span className="next">
             <AnimatePresence>
               {ending && state && (
-                <motion.span initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  next {groupCode(state.next)}
+                <motion.span initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring}>
+                  Next {groupCode(state.next)}
                 </motion.span>
               )}
             </AnimatePresence>
           </span>
         </span>
+        <span className="status">
+          <AnimatePresence initial={false}>
+            {copied ? (
+              <motion.span key="copied" className="copied-pill" initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={spring}>
+                <CheckIcon />
+                Copied
+              </motion.span>
+            ) : (
+              state && (
+                <motion.span key="timer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <Timer period={account.period} remaining={state.remaining} counter={state.counter} ending={ending} />
+                </motion.span>
+              )
+            )}
+          </AnimatePresence>
+        </span>
       </button>
-      <button className="icon-btn row-edit" onClick={() => onEdit(account)} aria-label={`Edit ${name}`} title="Edit">
+      <button className="icon-btn card-edit" onClick={() => onEdit(account)} aria-label={`Edit ${name}`} title="Edit">
         <EditIcon />
       </button>
     </div>
@@ -312,31 +340,33 @@ const AccountRow = memo(function AccountRow({ account, state, selected, copied, 
 
 function EmptyVault({ onAdd }: { onAdd: (source: AddSource) => void }) {
   return (
-    <motion.div className="empty" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
-      <span className="empty-icon" aria-hidden="true">
-        <KeyIcon />
-      </span>
-      <h1 className="title" style={{ fontSize: 24 }}>
-        Add your first code
+    <section className="hero">
+      <h1 className="display" data-reveal>
+        Add your first code.
       </h1>
-      <p className="body" style={{ maxWidth: 380 }}>
-        Open a site’s two-factor setup page and scan its QR code from your screen, or move everything over from your phone’s
-        authenticator.
+      <p className="lead" data-rise>
+        Open a site’s two-factor setup page and scan its QR code right off your screen, or bring everything over from your
+        phone’s authenticator.
       </p>
-      <div className="empty-actions">
-        <button className="btn btn-primary" onClick={() => onAdd('screen')}>
+      <div className="empty-actions" data-rise>
+        <button className="btn btn-primary btn-lg" onClick={() => onAdd('screen')}>
           <ScreenIcon />
           Scan From Screen
         </button>
-        <button className="btn" onClick={() => onAdd('image')}>
+        <button className="btn btn-soft btn-lg" onClick={() => onAdd('image')}>
           <ImageIcon />
           Upload QR Image
         </button>
-        <button className="btn" onClick={() => onAdd('link')}>
+        <button className="btn btn-soft btn-lg" onClick={() => onAdd('link')}>
           <LinkIcon />
           Paste Link
         </button>
       </div>
-    </motion.div>
+      <div className="ghost-grid" aria-hidden="true" data-rise>
+        <div className="ghost" />
+        <div className="ghost" />
+        <div className="ghost" />
+      </div>
+    </section>
   );
 }

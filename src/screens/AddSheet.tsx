@@ -174,7 +174,7 @@ function StreamSource({ kind, onText }: { kind: 'screen' | 'camera'; onText: (te
           <video ref={video} muted playsInline />
           <div className="scan-line" />
         </div>
-        <p className="caption" role="status" style={{ textAlign: 'center', margin: 0 }}>
+        <p className="small" role="status" style={{ textAlign: 'center', margin: 0 }}>
           {status || (kind === 'screen' ? 'Looking for a QR code on the shared screen…' : 'Hold the QR code up to the camera…')}
         </p>
         <button className="btn" onClick={stop}>
@@ -186,7 +186,7 @@ function StreamSource({ kind, onText }: { kind: 'screen' | 'camera'; onText: (te
 
   return (
     <div className="source-intro">
-      {kind === 'screen' ? <ScreenIcon className="icon-lg" /> : <CameraIcon className="icon-lg" />}
+      <span className="big-icon">{kind === 'screen' ? <ScreenIcon /> : <CameraIcon />}</span>
       <p className="headline">{kind === 'screen' ? 'Scan a QR code on your screen' : 'Scan with your camera'}</p>
       <p className="body" style={{ maxWidth: 360 }}>
         {kind === 'screen'
@@ -260,7 +260,9 @@ function ImageSource({ onText }: { onText: (text: string) => string | null }) {
         read(e.dataTransfer.files[0]);
       }}
     >
-      <ImageIcon className="icon-lg" />
+      <span className="big-icon">
+        <ImageIcon />
+      </span>
       <p className="headline">{busy ? 'Reading…' : 'Drop a QR code screenshot'}</p>
       <p className="body">or paste one with {navigator.platform.includes('Mac') ? '⌘V' : 'Ctrl+V'}</p>
       <button className="btn" onClick={() => input.current?.click()} data-autofocus>
@@ -405,11 +407,11 @@ function Review({ accounts, skipped, existing, onAdd }: { accounts: OtpParams[];
     const dup = isDuplicate(a);
     return (
       <div className="section" style={{ gap: 18 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="account-head">
           <Monogram name={displayName(a)} />
           <div className="who">
             <span className="issuer">{displayName(a)}</span>
-            {a.issuer && a.label && <span className="label">{a.label}</span>}
+            {a.issuer && a.label && <span className="account">{a.label}</span>}
           </div>
         </div>
         <LivePreview params={a} />
@@ -434,7 +436,7 @@ function Review({ accounts, skipped, existing, onAdd }: { accounts: OtpParams[];
                 <Monogram name={displayName(a)} />
                 <span className="who" style={{ flex: 1 }}>
                   <span className="issuer">{displayName(a)}</span>
-                  <span className="label">{dup ? 'Already in Tick' : a.label || ' '}</span>
+                  <span className="account">{dup ? 'Already in Tick' : a.label || ' '}</span>
                 </span>
               </label>
             </motion.li>
@@ -464,9 +466,9 @@ function LivePreview({ params }: { params: OtpParams }) {
   }, [params, counter]);
   return (
     <div className="preview-code">
-      <span className="caption">Current code</span>
+      <span className="small">Current code</span>
       <Odometer value={code || '0'.repeat(params.digits)} />
-      <span className="caption">Enter it on the site to finish turning on two-factor.</span>
+      <span className="small">Enter it on the site to finish turning on two-factor.</span>
     </div>
   );
 }

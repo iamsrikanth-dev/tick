@@ -38,10 +38,11 @@ export function useCompact(): boolean {
   );
 }
 
-export function Monogram({ name }: { name: string }) {
+/** A squircle app icon built from the service's initial, tinted per name. */
+export function Monogram({ name, size }: { name: string; size?: 'sm' }) {
   const dark = usePrefersDark();
   return (
-    <span className="monogram" style={monogramColors(name, dark)} aria-hidden="true">
+    <span className={`app-icon${size ? ` ${size}` : ''}`} style={monogramColors(name, dark)} aria-hidden="true">
       {initial(name)}
     </span>
   );
@@ -254,7 +255,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   {t.action.label}
                 </button>
               ) : (
-                <span style={{ width: 4 }} />
+                <span className="toast-spacer" />
               )}
             </motion.div>
           ))}

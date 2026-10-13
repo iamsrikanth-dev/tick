@@ -80,11 +80,11 @@ try {
   await page.waitForTimeout(800);
   await page.screenshot({ path: SHOTS + '01-welcome.png' });
   await page.getByRole('button', { name: 'Get Started' }).click();
-  await page.getByLabel('Master password').fill('short');
+  await page.getByLabel('Master password', { exact: true }).fill('short');
   await page.getByLabel('Confirm password').fill('short');
   await page.getByRole('button', { name: 'Create Vault' }).click();
   check('rejects a short password', await page.getByText('Use at least 8 characters.').isVisible());
-  await page.getByLabel('Master password').fill(PASSWORD);
+  await page.getByLabel('Master password', { exact: true }).fill(PASSWORD);
   await page.getByLabel('Confirm password').fill(PASSWORD);
   await page.screenshot({ path: SHOTS + '02-password.png' });
   await page.getByRole('button', { name: 'Create Vault' }).click();
@@ -104,8 +104,8 @@ try {
   const expected = totp(SECRET);
   check('preview shows the correct current code', preview?.replace(' ', '') === expected || preview?.replace(' ', '') === totp(SECRET, Date.now() - 2000), `${preview} vs ${expected}`);
   await page.getByRole('button', { name: 'Add GitHub' }).click();
-  await page.locator('.row').first().waitFor();
-  check('adds the account to the list', (await page.locator('.row').count()) === 1);
+  await page.locator('.card-wrap').first().waitFor();
+  check('adds the account to the list', (await page.locator('.card-wrap').count()) === 1);
 
   // --- Add a Google Authenticator transfer QR by image ---
   const gaUri = migrationUri([
@@ -121,8 +121,8 @@ try {
   await page.waitForTimeout(500);
   await page.screenshot({ path: SHOTS + '05-review-transfer.png' });
   await page.getByRole('button', { name: 'Add 2 Accounts' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 3);
-  const names = await page.locator('.row .issuer').allTextContents();
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 3);
+  const names = await page.locator('.card .issuer').allTextContents();
   check('imports the Google Authenticator transfer QR', JSON.stringify(names) === JSON.stringify(['Dropbox', 'GitHub', 'Slack']), JSON.stringify(names));
 
   // --- Duplicates are skipped ---
@@ -135,7 +135,7 @@ try {
   await page.waitForTimeout(400);
 
   // --- Codes on the list match RFC 6238 ---
-  const listCode = (await page.locator('.row', { hasText: 'GitHub' }).locator('.odo').getAttribute('aria-label'))?.replace(' ', '');
+  const listCode = (await page.locator('.card-wrap', { hasText: 'GitHub' }).locator('.odo').getAttribute('aria-label'))?.replace(' ', '');
   check('list code matches an independent TOTP implementation', listCode === totp(SECRET) || listCode === totp(SECRET, Date.now() - 2000), `${listCode} vs ${totp(SECRET)}`);
   await page.screenshot({ path: SHOTS + '06-list.png' });
   // The last five seconds of a cycle show the next code and switch to the warning color.
@@ -147,7 +147,7 @@ try {
   // --- Type to search, Enter to copy ---
   await page.locator('body').click({ position: { x: 5, y: 600 } });
   await page.keyboard.type('sla');
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 1);
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 1);
   check('typing anywhere searches', (await page.locator('.search input').first().inputValue()) === 'sla');
   await page.keyboard.press('Enter');
   await page.getByText('Copied Slack code').waitFor();
@@ -155,22 +155,22 @@ try {
   check('Enter copies the selected code', clip === totp('KRSXG5CTMVRXEZLU') || clip === totp('KRSXG5CTMVRXEZLU', Date.now() + 30000) || clip === totp('KRSXG5CTMVRXEZLU', Date.now() - 2000), `${clip}`);
   await page.screenshot({ path: SHOTS + '07-search-copied.png' });
   await page.keyboard.press('Escape');
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 3);
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 3);
 
   // --- Edit, delete, undo ---
-  await page.locator('.row', { hasText: 'Dropbox' }).hover();
+  await page.locator('.card-wrap', { hasText: 'Dropbox' }).hover();
   await page.getByRole('button', { name: 'Edit Dropbox' }).click();
   await page.getByLabel('Service').fill('Dropbox Work');
   await page.getByRole('button', { name: 'Save Changes' }).click();
-  await page.locator('.row', { hasText: 'Dropbox Work' }).waitFor();
+  await page.locator('.card-wrap', { hasText: 'Dropbox Work' }).waitFor();
   check('renames an account', true);
   await page.getByRole('button', { name: 'Edit Dropbox Work' }).click({ force: true });
   await page.getByRole('button', { name: 'Delete Account' }).click();
   await page.screenshot({ path: SHOTS + '08-delete-confirm.png' });
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 2);
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 2);
   await page.getByRole('button', { name: 'Undo' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 3);
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 3);
   check('deletes with confirmation and undo restores it', true);
 
   // --- Settings ---
@@ -187,17 +187,17 @@ try {
 
   // --- Lock, wrong password, unlock, persistence ---
   await page.getByRole('button', { name: 'Lock' }).click();
-  await page.getByRole('heading', { name: 'Tick is locked' }).waitFor();
-  await page.getByLabel('Master password').fill('wrong password');
+  await page.getByRole('heading', { name: 'Welcome back.' }).waitFor();
+  await page.getByLabel('Master password', { exact: true }).fill('wrong password');
   await page.getByRole('button', { name: 'Unlock' }).click();
   await page.getByText('That password isn’t right. Try again.').waitFor({ timeout: 15000 });
   check('rejects a wrong password', true);
   await page.screenshot({ path: SHOTS + '10-locked-error.png' });
   await page.reload();
-  await page.getByLabel('Master password').fill(PASSWORD);
+  await page.getByLabel('Master password', { exact: true }).fill(PASSWORD);
   await page.getByRole('button', { name: 'Unlock' }).click();
-  await page.locator('.row').first().waitFor({ timeout: 15000 });
-  check('accounts persist across reloads', (await page.locator('.row').count()) === 3);
+  await page.locator('.card-wrap').first().waitFor({ timeout: 15000 });
+  check('accounts persist across reloads', (await page.locator('.card-wrap').count()) === 3);
   await page.getByRole('button', { name: 'Settings' }).click();
   check('settings persist', (await page.getByRole('button', { name: '15 min' }).getAttribute('aria-pressed')) === 'true');
   await page.keyboard.press('Escape');
@@ -230,7 +230,7 @@ try {
 
   // --- Restore from the backup into a fresh vault ---
   await page.getByRole('button', { name: 'Get Started' }).click();
-  await page.getByLabel('Master password').fill('another password 42');
+  await page.getByLabel('Master password', { exact: true }).fill('another password 42');
   await page.getByLabel('Confirm password').fill('another password 42');
   await page.getByRole('button', { name: 'Create Vault' }).click();
   await page.getByRole('heading', { name: 'Add your first code' }).waitFor({ timeout: 15000 });
@@ -238,7 +238,7 @@ try {
   await page.locator('input[type=file]').last().setInputFiles(backupPath);
   await page.getByLabel('Backup password').fill(PASSWORD);
   await page.getByRole('button', { name: 'Restore Accounts' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.row').length === 3, null, { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('.card-wrap').length === 3, null, { timeout: 15000 });
   check('restores an encrypted backup into a new vault', true);
 
   check('no console errors or CSP violations', problems.length === 0, problems.join('\n'));

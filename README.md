@@ -12,6 +12,16 @@ signing in no longer means reaching for your phone.
   requests, and a strict Content Security Policy in production.
 - **Works offline** and installs as an app (PWA).
 
+## Design
+
+Modeled on Mobbin's visual system: one neo-grotesque family at heavy display weights (Inter
+Variable standing in for Mobbin's Saans, self-hosted), ink on white with soft grey surfaces instead
+of shadows, pill controls and 24px cards. Light and dark follow the system setting.
+
+Motion uses GSAP for choreography (line-by-line headline reveals with SplitText, staggered card
+entrances, the welcome marquee, count-ups, copy and error feedback) and Motion for layout and
+presence (search filtering, sheets, toasts). Every animation respects `prefers-reduced-motion`.
+
 ## Security model
 
 | What | How |

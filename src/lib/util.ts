@@ -55,8 +55,8 @@ export function monogramColors(name: string, dark: boolean): { background: strin
   for (const char of name.toLowerCase()) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
   const hue = hash % 360;
   return dark
-    ? { background: `hsl(${hue} 28% 22%)`, color: `hsl(${hue} 85% 82%)` }
-    : { background: `hsl(${hue} 70% 94%)`, color: `hsl(${hue} 60% 30%)` };
+    ? { background: `hsl(${hue} 30% 20%)`, color: `hsl(${hue} 85% 80%)` }
+    : { background: `hsl(${hue} 75% 90%)`, color: `hsl(${hue} 65% 26%)` };
 }
 
 export function initial(name: string): string {
