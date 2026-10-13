@@ -58,10 +58,10 @@ written to `e2e/screenshots/`.
 `dist/` is a static site. Any static host works; the app needs HTTPS for clipboard, camera and
 screen capture.
 
-- **Vercel / Netlify / Cloudflare Pages:** build command `npm run build`, output directory `dist`.
-- Recommended response headers on the host (the CSP is already in the page):
-  `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`,
-  `Permissions-Policy: camera=(self), display-capture=(self)`.
+- **Vercel:** import the repository; `vercel.json` sets the build, output directory, security
+  headers (no framing, HSTS, camera and screen capture limited to this site) and cache rules.
+- **Netlify / Cloudflare Pages:** build command `npm run build`, output directory `dist`, and copy
+  the headers from `vercel.json` into the host's headers file.
 
 ## Project layout
 
