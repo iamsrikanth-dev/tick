@@ -50,7 +50,7 @@ npm run e2e        # end-to-end checks against the production build (needs Chrom
 
 `npm run e2e` drives the built app in Chromium through setup, every add path, search, copy, edit,
 delete with undo, lock and unlock, backup and restore, and fails on any console error or CSP
-violation. Set `CHROMIUM_PATH` if Chromium isn't at `/opt/pw-browsers/chromium`. Screenshots are
+violation. It uses `CHROMIUM_PATH` if set, otherwise the Chromium from `npx playwright install chromium`. Screenshots are
 written to `e2e/screenshots/`.
 
 ## Deploy
@@ -93,3 +93,12 @@ src/
 public/           manifest, service worker, icons
 e2e/              end-to-end run and icon renderer
 ```
+
+## Contributing and security
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Please report security problems
+privately as described in [SECURITY.md](SECURITY.md), not in public issues.
+
+## License
+
+[MIT](LICENSE) © MetricDeck. Tick is a free tool by [MetricDeck](https://metricdeck.app).

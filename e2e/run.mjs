@@ -7,7 +7,7 @@
 import { spawn } from 'node:child_process';
 import { createHmac } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { chromium } from 'playwright';
+import { launchChromium } from './browser.mjs';
 import QRCode from 'qrcode';
 
 const PORT = 4179;
@@ -63,7 +63,7 @@ await new Promise((resolve, reject) => {
   setTimeout(() => reject(new Error('preview server timeout')), 20000);
 });
 
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium' });
+const browser = await launchChromium();
 try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 860 }, colorScheme: 'light', acceptDownloads: true });
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });

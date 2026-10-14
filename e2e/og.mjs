@@ -1,5 +1,5 @@
 // Renders public/og.png (1200×630), the preview shown when the site is shared on X, LinkedIn, etc.
-import { chromium } from 'playwright';
+import { launchChromium } from './browser.mjs';
 
 const font = new URL('../node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2', import.meta.url).href;
 const tiles = [
@@ -29,7 +29,7 @@ h1 { font-size: 84px; line-height: 1; font-weight: 650; letter-spacing: -0.04em;
 <div class="foot"><span><b>tickcodes.metricdeck.app</b></span><span>A free tool by <b>MetricDeck</b></span></div>
 </body></html>`;
 
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium' });
+const browser = await launchChromium();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 await page.setContent(html);
 await page.evaluate(() => document.fonts.ready);
