@@ -1,0 +1,18 @@
+# Tick
+
+> Tick is a free, open-source (MIT) two-factor authenticator that runs in the browser. It makes standard TOTP codes (RFC 6238) on the device: type a few letters of an account's name, press Enter, and the code is copied. Encrypted with AES-256-GCM under a master password (PBKDF2-SHA256, 600,000 iterations), stored only in the browser's IndexedDB. No server, no account, no analytics, works offline, installs as an app. Made by MetricDeck.
+
+- Open the app: https://tick.metricdeck.app/app
+- Source code: https://github.com/iamsrikanth-dev/tick
+- Trade-off: two-factor is strongest when codes live on a different device from passwords; Tick trades some of that separation for convenience. There is no password recovery.
+
+## Pages
+
+- [Tick: free 2FA authenticator for your computer](https://tick.metricdeck.app/): how it works, adding accounts, security model, FAQ
+- [Google Authenticator on your PC or Mac](https://tick.metricdeck.app/google-authenticator-on-pc): move every code from Google Authenticator to a computer with its transfer QR code
+- [Authy desktop alternative](https://tick.metricdeck.app/authy-desktop-alternative): the Authy desktop apps were retired on 19 March 2024; how to move each account to Tick
+
+## Optional
+
+- [Tick on MetricDeck](https://metricdeck.app/tools/2fa-authenticator): MetricDeck's page about Tick
+- [MetricDeck](https://metricdeck.app/): marketing monitoring and client reports for agencies and freelancers

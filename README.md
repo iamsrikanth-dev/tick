@@ -68,6 +68,17 @@ screen capture.
 - `/` is a static, crawlable landing page (`index.html`, `src/landing/`) with the SEO metadata,
   share image (`public/og.png`, regenerate with `node e2e/og.mjs`), structured data (app + FAQ),
   `robots.txt` and `sitemap.xml`. The app itself lives at `/app` (`app.html`) and is `noindex`.
+- Guides for what people search, at clean paths: `/google-authenticator-on-pc` and
+  `/authy-desktop-alternative` (`google-authenticator-on-pc.html`, `authy-desktop-alternative.html`;
+  same header, footer, styles and script as the landing page, each with its own title, description,
+  canonical and structured data: article, breadcrumb and FAQ). A new guide needs its file, an entry
+  in `PAGES` (`vite.config.ts`), a rewrite and redirect in `vercel.json`, a line in `sitemap.xml`
+  and `llms.txt`, a link in every page's footer, and its slug in `e2e/run.mjs`.
+- `llms.txt` summarises Tick and its pages for AI assistants.
+- Structured data names MetricDeck by the same `@id` metricdeck.app uses
+  (`https://metricdeck.app/#organization`), and Tick's page there
+  (metricdeck.app/tools/2fa-authenticator) is its `subjectOf`, so both sites read as one app and one
+  publisher. The footer also links MetricDeck's other free tools.
 - The example tiles use brand logos from Iconify's `logos` set (CC0), bundled into
   `public/brands/` by `node e2e/brands.mjs` so the page makes no outside requests.
 - Tick is a free tool by [MetricDeck](https://metricdeck.app). Every link to MetricDeck carries
@@ -82,6 +93,7 @@ screen capture.
 
 ```text
 index.html        landing page (static, SEO)
+*-*.html          guides (static, SEO), served without .html
 app.html          the app shell, served at /app
 src/
   landing/        landing page styles and GSAP scroll animations

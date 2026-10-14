@@ -799,3 +799,100 @@ html.motion body:not(.ready) [data-rise] {
     display: none;
   }
 }
+
+/* ---------- Footer: guides and MetricDeck's other free tools ---------- */
+
+.l-footer-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 40px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.l-footer-more nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+
+.l-footer-label {
+  font-weight: 600;
+}
+
+.l-footer-more a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.l-footer-more a:hover {
+  color: var(--ink);
+}
+
+/* ---------- Guides: a reading column under the hero ---------- */
+
+.l-guide .display {
+  font-size: clamp(38px, 5.6vw, 64px);
+}
+
+.l-article {
+  width: min(680px, 100% - 32px);
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.l-article h2 {
+  margin: 56px 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 32px);
+  line-height: 1.15;
+  font-weight: var(--w-display);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.l-article h2:first-child {
+  margin-top: 0;
+}
+
+.l-article p,
+.l-article ul,
+.l-article ol {
+  margin: 0 0 16px;
+}
+
+.l-article ul,
+.l-article ol {
+  padding-left: 1.4em;
+}
+
+.l-article li + li {
+  margin-top: 8px;
+}
+
+.l-article a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.l-note {
+  margin: 24px 0;
+  padding: 20px 24px;
+  border-radius: var(--r-md);
+  background: var(--soft);
+}
+
+.l-note p {
+  margin: 0;
+}
+
+.l-note p + p {
+  margin-top: 8px;
+}
+
+.l-article .l-cta {
+  justify-content: flex-start;
+  margin-top: 24px;
+}
