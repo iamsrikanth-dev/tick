@@ -334,7 +334,9 @@ document.querySelectorAll<HTMLDetailsElement>('.l-faq details').forEach((details
           ease: 'power3.inOut',
           onComplete: () => {
             details.open = false;
-            gsap.set([details, answer], { clearProps: 'all' });
+            // Clear only what this animation set; the item's own visibility must stay intact.
+            gsap.set(details, { clearProps: 'height' });
+            gsap.set(answer, { clearProps: 'opacity,visibility,transform' });
             animating = false;
           },
         },

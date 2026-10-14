@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Tick: free, encrypted 2FA codes in your browser. A free tool by MetricDeck.",
   "license": "MIT",
-  "homepage": "https://tickcodes.metricdeck.app",
+  "homepage": "https://tick.metricdeck.app",
   "repository": {
     "type": "git",
     "url": "https://github.com/iamsrikanth-dev/tick-codes.git"

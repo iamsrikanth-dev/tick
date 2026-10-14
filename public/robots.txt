@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /app
 
-Sitemap: https://tickcodes.metricdeck.app/sitemap.xml
+Sitemap: https://tick.metricdeck.app/sitemap.xml

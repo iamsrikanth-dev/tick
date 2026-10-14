@@ -33,7 +33,7 @@ h1 { font-size: 80px; line-height: 1.02; font-weight: 700; letter-spacing: -0.03
 <div class="top"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#141414"/><path d="M16 7.5a8.5 8.5 0 1 1-8.5 8.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.6" fill="#fff"/></svg>Tick<span class="pill">Free · Private · Offline</span></div>
 <h1>Your 2FA codes, one keystroke away.</h1>
 <div class="row">${tiles.map(([i, n, c, bg, fg]) => `<div class="tile"><span class="icon" style="background:${bg};color:${fg}">${i}</span><span class="name">${n}</span><span class="code">${c}</span></div>`).join('')}</div>
-<div class="foot"><span><b>tickcodes.metricdeck.app</b></span><span class="md">A free tool by ${mdIcon}<b>MetricDeck</b></span></div>
+<div class="foot"><span><b>tick.metricdeck.app</b></span><span class="md">A free tool by ${mdIcon}<b>MetricDeck</b></span></div>
 </body></html>`;
 
 const browser = await launchChromium();

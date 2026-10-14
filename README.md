@@ -74,8 +74,8 @@ screen capture.
   `utm_source=tickcodes` and a `utm_content` naming its placement, so visits show up in
   MetricDeck's analytics.
 - The MetricDeck mark is inlined in `index.html` (also saved as `public/metricdeck-icon.svg`).
-- Production domain: `tickcodes.metricdeck.app`. In Vercel, add the domain under Project →
-  Settings → Domains, then create a `CNAME` record for `tickcodes` pointing to the target Vercel
+- Production domain: `tick.metricdeck.app`. In Vercel, add the domain under Project →
+  Settings → Domains, then create a `CNAME` record for `tick` pointing to the target Vercel
   shows. If the domain ever changes, update the canonical, Open Graph and sitemap URLs.
 
 ## Project layout

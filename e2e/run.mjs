@@ -90,7 +90,7 @@ try {
     appLinks: document.querySelectorAll('a[href="/app"]').length,
     mdLinks: [...document.querySelectorAll('a[href^="https://metricdeck.app/"]')].every((a) => a.href.includes('utm_source=tickcodes')),
   }));
-  check('landing has title, description, canonical and share image', seo.title.length > 30 && seo.title.length <= 70 && seo.description.length >= 120 && seo.description.length <= 170 && seo.canonical === 'https://tickcodes.metricdeck.app/' && !!seo.ogImage, JSON.stringify(seo));
+  check('landing has title, description, canonical and share image', seo.title.length > 30 && seo.title.length <= 70 && seo.description.length >= 120 && seo.description.length <= 170 && seo.canonical === 'https://tick.metricdeck.app/' && !!seo.ogImage, JSON.stringify(seo));
   check('landing has one h1 and valid structured data', seo.h1 === 1 && JSON.stringify(seo.jsonld) === JSON.stringify([['Organization', 'WebApplication', 'FAQPage']]), JSON.stringify(seo.jsonld));
   check('landing links to the app and to MetricDeck with tracking', seo.faqs === 7 && seo.appLinks >= 3 && seo.mdLinks, JSON.stringify(seo));
   for (const path of ['/robots.txt', '/sitemap.xml', '/og.png']) {
@@ -111,7 +111,7 @@ try {
   const opened = await faq.evaluate((d) => d.open && d.offsetHeight > 100);
   await faq.locator('summary').click();
   await page.waitForTimeout(900);
-  const closed = await faq.evaluate((d) => !d.open);
+  const closed = await faq.evaluate((d) => !d.open && getComputedStyle(d).visibility === 'visible' && d.offsetHeight > 40);
   check('FAQ answers open and close smoothly', opened && closed);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(400);
