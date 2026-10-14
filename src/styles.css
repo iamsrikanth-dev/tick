@@ -64,11 +64,6 @@
   }
 }
 
-/* Cross-page fade between the landing page and the app in browsers that support it. */
-@view-transition {
-  navigation: auto;
-}
-
 * {
   box-sizing: border-box;
 }

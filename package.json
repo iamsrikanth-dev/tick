@@ -7,7 +7,7 @@
   "homepage": "https://tick.metricdeck.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iamsrikanth-dev/tick-codes.git"
+    "url": "https://github.com/iamsrikanth-dev/tick.git"
   },
   "type": "module",
   "engines": {
