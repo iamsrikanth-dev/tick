@@ -1,4 +1,4 @@
-/* Tick — design tokens follow Mobbin's system: one neo-grotesque family at heavy display weights,
+/* Tick — design tokens follow Mobbin's system: Plus Jakarta Sans for display, DM Sans for body,
    ink on white, soft grey surfaces instead of shadows, pills for every control, 24px cards.
    Contrast figures are WCAG ratios against --canvas / --soft, computed from these values. */
 
@@ -21,7 +21,8 @@
   --elevated: 0 24px 80px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.06);
   --ring: 0 0 0 2px var(--ink);
 
-  --font: 'Inter Variable', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font: 'DM Sans Variable', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Plus Jakarta Sans Variable', -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --w-display: 650;
   --w-body: 450;
   --w-light: 300;
@@ -63,6 +64,11 @@
   }
 }
 
+/* Cross-page fade between the landing page and the app in browsers that support it. */
+@view-transition {
+  navigation: auto;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -85,7 +91,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
-  font-feature-settings: 'cv11', 'ss01';
 }
 
 button,
@@ -114,6 +119,23 @@ strong {
 }
 
 /* ---------- Type scale ---------- */
+
+.display,
+.h1,
+.headline,
+.brand,
+.btn,
+.code,
+.tile-code,
+.count,
+.sheet-head .headline,
+.l-step-visual kbd,
+.copied-pill,
+.timer,
+.app-icon,
+.pill-label {
+  font-family: var(--font-display);
+}
 
 .display,
 .h1 {

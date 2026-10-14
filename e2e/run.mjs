@@ -104,15 +104,43 @@ try {
   await page.locator('#metricdeck').scrollIntoViewIfNeeded();
   await page.waitForTimeout(1600);
   await page.screenshot({ path: SHOTS + '00c-landing-metricdeck.png' });
+  // FAQ items open and close (animated) and stay accessible.
+  const faq = page.locator('.l-faq details').first();
+  await faq.locator('summary').click();
+  await page.waitForTimeout(900);
+  const opened = await faq.evaluate((d) => d.open && d.offsetHeight > 100);
+  await faq.locator('summary').click();
+  await page.waitForTimeout(900);
+  const closed = await faq.evaluate((d) => !d.open);
+  check('FAQ answers open and close smoothly', opened && closed);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: SHOTS + '00e-landing-top-again.png' });
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await page.waitForTimeout(900);
+  check('header condenses after scrolling', await page.locator('[data-header].scrolled').count() === 1);
+  await page.screenshot({ path: SHOTS + '00f-landing-scrolled.png' });
+
   await page.setViewportSize({ width: 390, height: 844 });
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(600);
   await page.screenshot({ path: SHOTS + '00d-landing-mobile.png' });
   check('landing has no horizontal scroll at 390 px', !(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)));
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: SHOTS + '00g-landing-mobile-menu.png' });
+  check('mobile menu opens', await page.locator('[data-menu]').isVisible());
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(500);
   await page.setViewportSize({ width: 1280, height: 860 });
 
+  // --- Landing → app hand-off ---
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.locator('.l-hero [data-app-link]').click();
+  await page.waitForURL('**/app', { timeout: 10000 });
+  check('Open Tick leads into the app', true);
+
   // --- Setup ---
-  await page.goto(BASE + '/app');
   await page.getByRole('button', { name: 'Get Started' }).waitFor();
   await page.waitForTimeout(800);
   await page.screenshot({ path: SHOTS + '01-welcome.png' });

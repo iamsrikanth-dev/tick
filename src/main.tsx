@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import '@fontsource-variable/inter/opsz.css';
+import '@fontsource-variable/plus-jakarta-sans/index.css';
+import '@fontsource-variable/dm-sans/opsz.css';
 import './styles.css';
 
 createRoot(document.getElementById('root')!).render(

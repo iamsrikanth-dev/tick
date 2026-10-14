@@ -57,6 +57,8 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: false,
+    // Never inline assets as data: URLs; the CSP only allows files from this origin.
+    assetsInlineLimit: 0,
     rollupOptions: {
       input: {
         landing: resolve(__dirname, 'index.html'),

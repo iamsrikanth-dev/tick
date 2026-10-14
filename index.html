@@ -140,7 +140,7 @@
   <body class="landing">
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="l-nav-wrap">
+    <header class="l-header" data-header>
       <nav class="l-nav" aria-label="Main">
         <a class="brand" href="/" aria-label="Tick home">
           <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -150,13 +150,33 @@
           </svg>
           Tick
         </a>
-        <div class="l-links">
+        <a class="md-badge" href="#metricdeck">
+          <svg viewBox="0 0 28 28" aria-hidden="true" class="md-icon"><rect width="28" height="28" rx="6.3" fill="#4f46e5" /><g transform="translate(1.2492307692307678 1.2492307692307683) scale(0.5312820512820513)"><rect x="4.5" y="26" width="7" height="16" rx="3.5" fill="#bdb8fa" /><rect x="14.5" y="16" width="7" height="26" rx="3.5" fill="#bdb8fa" /><path d="M28 6 H29.5 A14 18 0 0 1 29.5 42 H28 A3.5 3.5 0 0 1 24.5 38.5 V9.5 A3.5 3.5 0 0 1 28 6 Z" fill="#ffffff" /></g></svg>
+          <span>by MetricDeck</span>
+        </a>
+        <div class="l-links" data-links>
+          <span class="l-links-hl" aria-hidden="true"></span>
           <a href="#how">How it works</a>
+          <a href="#features">Features</a>
           <a href="#security">Security</a>
           <a href="#faq">FAQ</a>
         </div>
-        <a class="btn btn-primary" href="/app">Open Tick</a>
+        <a class="btn btn-primary l-nav-cta" href="/app" data-app-link>
+          Open Tick
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+        <button class="icon-btn l-menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>
+          <span class="l-burger" aria-hidden="true"><span></span><span></span></span>
+        </button>
       </nav>
+      <div class="l-mobile-menu" id="mobile-menu" data-menu hidden>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#security">Security</a>
+        <a href="#faq">FAQ</a>
+        <a href="#metricdeck">About MetricDeck</a>
+        <a class="btn btn-primary btn-lg" href="/app" data-app-link>Open Tick — it’s free</a>
+      </div>
     </header>
 
     <main id="main">
@@ -171,7 +191,7 @@
           clipboard. No more reaching for your phone every time you sign in.
         </p>
         <div class="l-cta" data-rise>
-          <a class="btn btn-primary btn-lg" href="/app">
+          <a class="btn btn-primary btn-lg" href="/app" data-app-link>
             Open Tick — it’s free
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
@@ -215,7 +235,7 @@
         </ol>
       </section>
 
-      <section class="l-section" aria-labelledby="features-title">
+      <section id="features" class="l-section" aria-labelledby="features-title">
         <p class="eyebrow" data-rise>Everything you need</p>
         <h2 id="features-title" class="h1" data-reveal>Small tool. Thought through.</h2>
         <div class="l-grid">
@@ -260,7 +280,7 @@
             </div>
             <div data-rise>
               <dt>Master password</dt>
-              <dd>PBKDF2-SHA256 with 600,000 iterations and a random salt. Never stored.</dd>
+              <dd>PBKDF2-SHA256 with <span class="num" data-count="600000">600,000</span> iterations and a random salt. Never stored.</dd>
             </div>
             <div data-rise>
               <dt>Storage</dt>
@@ -350,8 +370,9 @@
 
       <section id="metricdeck" class="l-section" aria-labelledby="md-title">
         <div class="l-maker" data-rise>
-          <a class="md-logo" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=maker_section" aria-label="MetricDeck">
-            <img src="/metricdeck-logo.svg" alt="MetricDeck" width="160" height="40" />
+          <a class="md-logo" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=maker_section">
+            <svg viewBox="0 0 28 28" aria-hidden="true" class="md-icon lg"><rect width="28" height="28" rx="6.3" fill="#4f46e5" /><g transform="translate(1.2492307692307678 1.2492307692307683) scale(0.5312820512820513)"><rect x="4.5" y="26" width="7" height="16" rx="3.5" fill="#bdb8fa" /><rect x="14.5" y="16" width="7" height="26" rx="3.5" fill="#bdb8fa" /><path d="M28 6 H29.5 A14 18 0 0 1 29.5 42 H28 A3.5 3.5 0 0 1 24.5 38.5 V9.5 A3.5 3.5 0 0 1 28 6 Z" fill="#ffffff" /></g></svg>
+            <span>MetricDeck</span>
           </a>
           <h2 id="md-title" class="h1">Made by the team behind MetricDeck.</h2>
           <p class="lead l-narrow">
@@ -363,7 +384,7 @@
               Visit MetricDeck
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
             </a>
-            <a class="btn btn-lg" href="/app">Open Tick</a>
+            <a class="btn btn-lg" href="/app" data-app-link>Open Tick</a>
           </div>
         </div>
       </section>
@@ -374,11 +395,11 @@
         <span class="brand">Tick</span>
         <p class="small">
           A free tool by
-          <a href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer">MetricDeck</a>.
+          <a class="md-inline" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer"><svg viewBox="0 0 28 28" aria-hidden="true" class="md-icon sm"><rect width="28" height="28" rx="6.3" fill="#4f46e5" /><g transform="translate(1.2492307692307678 1.2492307692307683) scale(0.5312820512820513)"><rect x="4.5" y="26" width="7" height="16" rx="3.5" fill="#bdb8fa" /><rect x="14.5" y="16" width="7" height="26" rx="3.5" fill="#bdb8fa" /><path d="M28 6 H29.5 A14 18 0 0 1 29.5 42 H28 A3.5 3.5 0 0 1 24.5 38.5 V9.5 A3.5 3.5 0 0 1 28 6 Z" fill="#ffffff" /></g></svg>MetricDeck</a>.
           Your codes are encrypted and stay in your browser. Tick collects no data.
         </p>
         <nav class="l-footer-links" aria-label="Footer">
-          <a href="/app">Open Tick</a>
+          <a href="/app" data-app-link>Open Tick</a>
           <a href="#security">Security</a>
           <a href="#faq">FAQ</a>
         </nav>

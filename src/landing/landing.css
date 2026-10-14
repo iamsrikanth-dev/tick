@@ -4,6 +4,21 @@
   overflow-x: hidden;
 }
 
+html:has(.landing) {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.landing) {
+    scroll-behavior: auto;
+  }
+}
+
+/* Anchored sections land below the sticky header. */
+.landing section[id] {
+  scroll-margin-top: 96px;
+}
+
 .skip {
   position: absolute;
   left: 16px;
@@ -42,65 +57,234 @@ html.motion body:not(.ready) [data-rise] {
   }
 }
 
-/* ---------- Nav ---------- */
+/* ---------- Header ----------
+   Open and airy at the top of the page; condenses into a floating, blurred pill once you scroll. */
 
-.l-nav-wrap {
+.l-header {
   position: sticky;
-  top: 12px;
-  z-index: 20;
-  padding: 0 16px;
+  top: 0;
+  z-index: 30;
+  padding: 14px 16px 0;
 }
 
 .l-nav {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: min(1120px, 100%);
-  margin: 12px auto 0;
-  padding: 6px 6px 6px 18px;
+  gap: 10px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 10px 10px 10px 14px;
   border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--soft) 88%, transparent);
-  backdrop-filter: saturate(1.5) blur(20px);
-  -webkit-backdrop-filter: saturate(1.5) blur(20px);
+  background: transparent;
+  box-shadow: 0 0 0 1px transparent;
+  transition:
+    width 600ms var(--ease),
+    background-color 400ms,
+    box-shadow 400ms,
+    padding 600ms var(--ease);
+}
+
+.l-header.scrolled .l-nav {
+  width: min(960px, 100%);
+  padding: 6px 6px 6px 14px;
+  background: color-mix(in srgb, var(--canvas) 72%, transparent);
+  box-shadow:
+    0 0 0 1px var(--hairline),
+    0 12px 40px rgb(0 0 0 / 0.08);
+  backdrop-filter: saturate(1.6) blur(22px);
+  -webkit-backdrop-filter: saturate(1.6) blur(22px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .l-header.scrolled .l-nav {
+    background: var(--canvas);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .l-nav .brand {
   text-decoration: none;
 }
 
+.md-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.md-icon.sm {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+  margin-right: 5px;
+}
+
+.md-icon.lg {
+  width: 44px;
+  height: 44px;
+}
+
+.md-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px 0 7px;
+  border-radius: var(--r-full);
+  background: var(--soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 200ms, transform 300ms var(--ease);
+}
+
+.md-badge:hover {
+  background: var(--soft-hover);
+  transform: translateY(-1px);
+}
+
 .l-links {
+  position: relative;
   flex: 1;
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .l-links a {
-  padding: 10px 14px;
+  position: relative;
+  z-index: 1;
+  padding: 10px 16px;
   border-radius: var(--r-full);
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
   color: var(--muted);
-  transition: color 200ms, background-color 200ms;
+  transition: color 250ms;
 }
 
-.l-links a:hover {
+.l-links a:hover,
+.l-links a[aria-current='true'] {
   color: var(--ink);
-  background: var(--soft-hover);
 }
 
-.l-nav .btn {
-  min-height: 40px;
+/* One highlight that slides between links on hover (moved by GSAP). */
+.l-links-hl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: var(--r-full);
+  background: var(--soft-hover);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.l-nav-cta {
+  min-height: 42px;
   text-decoration: none;
 }
 
-@media (max-width: 720px) {
+.l-nav-cta .icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 300ms var(--ease);
+}
+
+.l-nav-cta:hover .icon {
+  transform: translateX(3px);
+}
+
+.l-menu-btn {
+  display: none;
+}
+
+.l-burger {
+  display: grid;
+  gap: 5px;
+  width: 18px;
+}
+
+.l-burger span {
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 350ms var(--ease);
+}
+
+.l-menu-btn[aria-expanded='true'] .l-burger span:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.l-menu-btn[aria-expanded='true'] .l-burger span:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+.l-mobile-menu {
+  display: grid;
+  gap: 4px;
+  width: min(960px, 100%);
+  margin: 8px auto 0;
+  padding: 10px;
+  border-radius: 28px;
+  background: var(--canvas);
+  box-shadow:
+    0 0 0 1px var(--hairline),
+    0 24px 60px rgb(0 0 0 / 0.12);
+}
+
+.l-mobile-menu[hidden] {
+  display: none;
+}
+
+.l-mobile-menu a:not(.btn) {
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.l-mobile-menu a:not(.btn):hover {
+  background: var(--soft);
+}
+
+.l-mobile-menu .btn {
+  margin-top: 6px;
+}
+
+@media (max-width: 860px) {
   .l-links {
     display: none;
   }
-  .l-nav .btn {
-    margin-left: auto;
+  .l-nav {
+    justify-content: space-between;
+  }
+  .md-badge {
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .md-badge span {
+    display: none;
+  }
+  .md-badge {
+    padding: 0 7px;
+  }
+  .l-nav-cta {
+    display: none;
+  }
+  .l-menu-btn {
+    display: inline-grid;
+    width: 44px;
+    height: 44px;
+    background: var(--soft);
   }
 }
 
@@ -382,17 +566,15 @@ html.motion body:not(.ready) [data-rise] {
   background: var(--soft);
 }
 
-.md-logo img {
-  display: block;
-  height: 40px;
-  width: auto;
-}
-
-@media (prefers-color-scheme: dark) {
-  /* The placeholder wordmark is dark ink; flip it on dark surfaces. Remove if the real logo has color. */
-  .md-logo img {
-    filter: invert(1);
-  }
+.md-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
 }
 
 /* ---------- Footer ---------- */
@@ -420,6 +602,7 @@ html.motion body:not(.ready) [data-rise] {
 
 .l-footer-inner .small a {
   font-weight: 600;
+  text-decoration: none;
 }
 
 .l-footer-links {
@@ -439,4 +622,124 @@ html.motion body:not(.ready) [data-rise] {
 
 .landing a.btn:not(.btn-primary) {
   color: var(--ink);
+}
+
+/* ---------- Interaction polish ---------- */
+
+/* Cards lift slightly and catch a soft spotlight that follows the pointer (set by GSAP). */
+.l-card,
+.l-specs > div {
+  position: relative;
+  overflow: hidden;
+  transition: transform 500ms var(--ease), background-color 300ms;
+}
+
+.l-card::before,
+.l-specs > div::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--canvas) 70%, transparent), transparent 60%);
+  opacity: 0;
+  transition: opacity 400ms;
+  pointer-events: none;
+}
+
+.l-specs > div::before {
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--on-ink) 10%, transparent), transparent 60%);
+}
+
+.l-card:hover,
+.l-specs > div:hover {
+  transform: translateY(-4px);
+}
+
+.l-card:hover::before,
+.l-specs > div:hover::before {
+  opacity: 1;
+}
+
+.l-card > *,
+.l-specs > div > * {
+  position: relative;
+}
+
+/* Keys in the "how it works" cards press down in sequence. */
+.l-step-visual kbd {
+  transition: transform 160ms var(--ease), box-shadow 160ms;
+}
+
+.l-step-visual kbd.pressed {
+  transform: translateY(3px);
+  box-shadow: inset 0 -1px 0 var(--hairline);
+  background: var(--soft-hover);
+}
+
+.l-specs .num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* FAQ answers animate their height (GSAP); this keeps the closing animation visible. */
+.l-faq details {
+  overflow: hidden;
+}
+
+.l-faq summary {
+  transition: color 200ms;
+}
+
+.l-faq summary:hover {
+  color: var(--muted);
+}
+
+/* Page transition into the app. */
+.page-leave {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--canvas);
+  pointer-events: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .l-card,
+  .l-specs > div,
+  .l-nav,
+  .md-badge {
+    transition: none;
+  }
+  .l-card:hover,
+  .l-specs > div:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .l-card::before {
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.06), transparent 60%);
+  }
+}
+
+.landing a.btn {
+  text-decoration: none;
+}
+
+/* Brand logo tiles in the scrolling examples: white in both themes so every logo reads. */
+.brand-tile {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 30%;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+
+.brand-tile img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }

@@ -14,8 +14,8 @@ signing in no longer means reaching for your phone.
 
 ## Design
 
-Modeled on Mobbin's visual system: one neo-grotesque family at heavy display weights (Inter
-Variable standing in for Mobbin's Saans, self-hosted), ink on white with soft grey surfaces instead
+Modeled on Mobbin's visual system: Plus Jakarta Sans for headings, controls and digits, DM Sans
+for body text (both self-hosted), ink on white with soft grey surfaces instead
 of shadows, pill controls and 24px cards. Light and dark follow the system setting.
 
 Motion uses GSAP for choreography (line-by-line headline reveals with SplitText, staggered card
@@ -68,12 +68,12 @@ screen capture.
 - `/` is a static, crawlable landing page (`index.html`, `src/landing/`) with the SEO metadata,
   share image (`public/og.png`, regenerate with `node e2e/og.mjs`), structured data (app + FAQ),
   `robots.txt` and `sitemap.xml`. The app itself lives at `/app` (`app.html`) and is `noindex`.
+- The example tiles use brand logos from Iconify's `logos` set (CC0), bundled into
+  `public/brands/` by `node e2e/brands.mjs` so the page makes no outside requests.
 - Tick is a free tool by [MetricDeck](https://metricdeck.app). Every link to MetricDeck carries
   `utm_source=tickcodes` and a `utm_content` naming its placement, so visits show up in
   MetricDeck's analytics.
-- `public/metricdeck-logo.svg` is a placeholder wordmark. Replace it with the official logo (same
-  file name), and drop the dark-mode `filter: invert(1)` in `src/landing/landing.css` if the real
-  logo has its own dark variant or colors.
+- The MetricDeck mark is inlined in `index.html` (also saved as `public/metricdeck-icon.svg`).
 - Production domain: `tickcodes.metricdeck.app`. In Vercel, add the domain under Project →
   Settings → Domains, then create a `CNAME` record for `tickcodes` pointing to the target Vercel
   shows. If the domain ever changes, update the canonical, Open Graph and sitemap URLs.
