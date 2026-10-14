@@ -56,12 +56,30 @@
     {
       "source": "/app",
       "destination": "/app.html"
+    },
+    {
+      "source": "/google-authenticator-on-pc",
+      "destination": "/google-authenticator-on-pc.html"
+    },
+    {
+      "source": "/authy-desktop-alternative",
+      "destination": "/authy-desktop-alternative.html"
     }
   ],
   "redirects": [
     {
       "source": "/app.html",
       "destination": "/app",
+      "permanent": true
+    },
+    {
+      "source": "/google-authenticator-on-pc.html",
+      "destination": "/google-authenticator-on-pc",
+      "permanent": true
+    },
+    {
+      "source": "/authy-desktop-alternative.html",
+      "destination": "/authy-desktop-alternative",
       "permanent": true
     }
   ]

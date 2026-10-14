@@ -31,17 +31,19 @@ function csp(): Plugin {
   };
 }
 
-// The app lives at /app (app.html); the landing page is index.html. Vercel rewrites /app in
-// production (vercel.json); this does the same for the dev and preview servers.
-function appRoute(): Plugin {
+// Pages served at clean paths (/app → app.html). Vercel rewrites them in production
+// (vercel.json); this does the same for the dev and preview servers.
+const PAGES = ['app', 'google-authenticator-on-pc', 'authy-desktop-alternative'];
+
+function cleanRoutes(): Plugin {
   const rewrite: Connect.NextHandleFunction = (req, _res, next) => {
-    if (req.url === '/app' || req.url?.startsWith('/app?') || req.url === '/app/') {
-      req.url = '/app.html' + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '');
-    }
+    const [path, query] = (req.url ?? '').split(/\?(.*)/s);
+    const name = path.replace(/^\/|\/$/g, '');
+    if (PAGES.includes(name)) req.url = `/${name}.html${query ? `?${query}` : ''}`;
     next();
   };
   return {
-    name: 'tick-app-route',
+    name: 'tick-clean-routes',
     configureServer(server) {
       server.middlewares.use(rewrite);
     },
@@ -52,7 +54,7 @@ function appRoute(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), csp(), appRoute()],
+  plugins: [react(), csp(), cleanRoutes()],
   appType: 'mpa',
   build: {
     target: 'es2022',
@@ -62,7 +64,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         landing: resolve(__dirname, 'index.html'),
-        app: resolve(__dirname, 'app.html'),
+        ...Object.fromEntries(PAGES.map((name) => [name, resolve(__dirname, `${name}.html`)])),
       },
     },
   },

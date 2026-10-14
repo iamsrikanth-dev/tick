@@ -93,7 +93,7 @@ try {
   check('landing has title, description, canonical and share image', seo.title.length > 30 && seo.title.length <= 70 && seo.description.length >= 120 && seo.description.length <= 170 && seo.canonical === 'https://tick.metricdeck.app/' && !!seo.ogImage, JSON.stringify(seo));
   check('landing has one h1 and valid structured data', seo.h1 === 1 && JSON.stringify(seo.jsonld) === JSON.stringify([['Organization', 'WebApplication', 'FAQPage']]), JSON.stringify(seo.jsonld));
   check('landing links to the app and to MetricDeck with tracking', seo.faqs === 7 && seo.appLinks >= 3 && seo.mdLinks, JSON.stringify(seo));
-  for (const path of ['/robots.txt', '/sitemap.xml', '/og.png']) {
+  for (const path of ['/robots.txt', '/sitemap.xml', '/og.png', '/llms.txt']) {
     const res = await page.request.get(BASE + path);
     check(`${path} is served`, res.ok());
   }
@@ -133,6 +133,34 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(500);
   await page.setViewportSize({ width: 1280, height: 860 });
+
+  // --- Guides: SEO essentials at clean paths, linked from the landing page ---
+  for (const slug of ['google-authenticator-on-pc', 'authy-desktop-alternative']) {
+    await page.goto(BASE + '/' + slug);
+    await page.waitForTimeout(1200);
+    const guide = await page.evaluate(() => ({
+      title: document.title,
+      description: document.querySelector('meta[name="description"]')?.getAttribute('content') ?? '',
+      canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
+      h1: document.querySelectorAll('h1').length,
+      jsonld: [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => {
+        try { return JSON.parse(s.textContent)['@graph'].map((n) => n['@type']); } catch { return 'invalid'; }
+      }),
+      appLinks: document.querySelectorAll('a[href="/app"]').length,
+      mdLinks: [...document.querySelectorAll('a[href^="https://metricdeck.app/"]')].every((a) => a.href.includes('utm_source=tickcodes')),
+    }));
+    check(`/${slug} has title, description, canonical and one h1`, guide.title.length > 30 && guide.title.length <= 70 && guide.description.length >= 120 && guide.description.length <= 170 && guide.canonical === 'https://tick.metricdeck.app/' + slug && guide.h1 === 1, JSON.stringify(guide));
+    check(`/${slug} has valid structured data and links`, JSON.stringify(guide.jsonld) === JSON.stringify([['Organization', 'TechArticle', 'BreadcrumbList', 'FAQPage']]) && guide.appLinks >= 2 && guide.mdLinks, JSON.stringify(guide));
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(300);
+    check(`/${slug} has no horizontal scroll at 390 px`, !(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)));
+    await page.screenshot({ path: SHOTS + `00h-${slug}-mobile.png` });
+    await page.setViewportSize({ width: 1280, height: 860 });
+    await page.screenshot({ path: SHOTS + `00h-${slug}.png`, fullPage: true });
+  }
+  await page.goto(BASE + '/');
+  await page.waitForTimeout(1200);
+  check('landing links both guides', (await page.locator('a[href="/google-authenticator-on-pc"]').count()) >= 1 && (await page.locator('a[href="/authy-desktop-alternative"]').count()) >= 1);
 
   // --- Landing → app hand-off ---
   await page.evaluate(() => window.scrollTo(0, 0));

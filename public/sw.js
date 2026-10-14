@@ -23,8 +23,8 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     // Network first for the page so updates arrive; fall back to the cached shell offline.
-    // The app lives at /app and the landing page at /; each is cached under its own path.
-    const key = url.pathname.startsWith('/app') ? '/app' : '/';
+    // The app lives at /app; the landing page and the guides are each cached under their own path.
+    const key = url.pathname.startsWith('/app') ? '/app' : url.pathname;
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -34,7 +34,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(key).then((cached) => cached || caches.match('/app'))),
+        .catch(() => caches.match(key).then((cached) => cached || caches.match(key === '/app' ? '/app' : '/'))),
     );
     return;
   }

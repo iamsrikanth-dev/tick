@@ -44,9 +44,9 @@
         "@graph": [
           {
             "@type": "Organization",
-            "@id": "https://metricdeck.app/#org",
+            "@id": "https://metricdeck.app/#organization",
             "name": "MetricDeck",
-            "url": "https://metricdeck.app/"
+            "url": "https://metricdeck.app"
           },
           {
             "@type": "WebApplication",
@@ -68,8 +68,10 @@
               "Works offline and installs as an app",
               "Auto-lock and clipboard clearing"
             ],
-            "publisher": { "@id": "https://metricdeck.app/#org" },
+            "publisher": { "@id": "https://metricdeck.app/#organization" },
             "sameAs": ["https://github.com/iamsrikanth-dev/tick"],
+            "license": "https://opensource.org/licenses/MIT",
+            "subjectOf": { "@type": "WebPage", "url": "https://metricdeck.app/tools/2fa-authenticator" },
             "image": "https://tick.metricdeck.app/og.png"
           },
           {
@@ -332,7 +334,7 @@
             <p>
               Yes. In Google Authenticator, choose Transfer accounts, then Export accounts. Tick reads the transfer QR code with
               your computer’s camera or from a photo of it and imports every account at once. Tick also imports Aegis and 2FAS
-              exports.
+              exports. <a href="/google-authenticator-on-pc">See the step-by-step guide</a>.
             </p>
           </details>
           <details data-rise>
@@ -409,6 +411,19 @@
           <a href="#faq">FAQ</a>
           <a class="l-gh-foot" href="https://github.com/iamsrikanth-dev/tick" target="_blank" rel="noopener"><svg class="gh-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>Star on GitHub</a>
         </nav>
+        <div class="l-footer-more">
+          <nav aria-label="Guides">
+            <span class="l-footer-label">Guides</span>
+            <a href="/google-authenticator-on-pc">Google Authenticator on PC or Mac</a>
+            <a href="/authy-desktop-alternative">Authy desktop alternative</a>
+          </nav>
+          <nav aria-label="More free tools by MetricDeck">
+            <span class="l-footer-label">More free tools by MetricDeck</span>
+            <a href="https://metricdeck.app/tools/ai-search-checker?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_ai_search_checker">AI search checker</a>
+            <a href="https://metricdeck.app/tools/security-headers?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_security_headers">Security headers checker</a>
+            <a href="https://metricdeck.app/tools/2fa-authenticator?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_about_tick">About Tick</a>
+          </nav>
+        </div>
       </div>
     </footer>
   </body>

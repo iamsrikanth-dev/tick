@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Authy Desktop Alternative: Free 2FA Codes on Your Computer</title>
+    <meta name="description" content="The Authy desktop app was retired in 2024. Tick puts your 2FA codes back on your computer: type, Enter, paste. Free, encrypted, open source. How to move across." />
+    <link rel="canonical" href="https://tick.metricdeck.app/authy-desktop-alternative" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Tick by MetricDeck" />
+    <meta property="og:url" content="https://tick.metricdeck.app/authy-desktop-alternative" />
+    <meta property="og:title" content="The Authy desktop app is gone. Here’s the alternative." />
+    <meta property="og:description" content="The Authy desktop app was retired in 2024. Tick puts your 2FA codes back on your computer: type, Enter, paste. Free, encrypted, open source. How to move across." />
+    <meta property="og:image" content="https://tick.metricdeck.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tick: your 2FA codes, one keystroke away" />
+    <meta property="article:published_time" content="2026-10-14" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Authy desktop app is gone. Here’s the alternative." />
+    <meta name="twitter:description" content="The Authy desktop app was retired in 2024. Tick puts your 2FA codes back on your computer: type, Enter, paste. Free, encrypted, open source. How to move across." />
+    <meta name="twitter:image" content="https://tick.metricdeck.app/og.png" />
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" href="/boot.js" as="script" />
+    <script src="/boot.js"></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://metricdeck.app/#organization",
+            "name": "MetricDeck",
+            "url": "https://metricdeck.app"
+          },
+          {
+            "@type": "TechArticle",
+            "@id": "https://tick.metricdeck.app/authy-desktop-alternative#article",
+            "headline": "An Authy desktop alternative that’s free and open source",
+            "description": "The Authy desktop app was retired in 2024. Tick puts your 2FA codes back on your computer: type, Enter, paste. Free, encrypted, open source. How to move across.",
+            "url": "https://tick.metricdeck.app/authy-desktop-alternative",
+            "datePublished": "2026-10-14",
+            "dateModified": "2026-10-14",
+            "inLanguage": "en",
+            "author": {
+              "@id": "https://metricdeck.app/#organization"
+            },
+            "publisher": {
+              "@id": "https://metricdeck.app/#organization"
+            },
+            "about": {
+              "@id": "https://tick.metricdeck.app/#app"
+            },
+            "image": "https://tick.metricdeck.app/og.png"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Tick",
+                "item": "https://tick.metricdeck.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Authy desktop alternative",
+                "item": "https://tick.metricdeck.app/authy-desktop-alternative"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Does the Authy desktop app still work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Twilio retired the Authy apps for Windows, macOS and Linux on 19 March 2024 and now supports Authy on phones only."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I import my Authy accounts into Tick?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Not directly: Authy doesn’t export its accounts’ secret keys. Set up the authenticator again on each site and scan the new QR code with Tick. Keep Authy until you’ve moved every account."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Tick free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. No account, no limits and no ads. It’s open source under the MIT licence and made by MetricDeck."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Tick sync between my computers?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Not through a cloud: Tick has no server. Download an encrypted backup from its settings and restore it in another browser with your master password."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it safe to keep 2FA codes on my computer?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Tick encrypts them under your master password and never sends them anywhere. Keeping codes on the same device as your passwords is less separation than a phone, so use a strong master password and keep your sites’ backup codes safe."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script type="module" src="/src/landing/main.ts"></script>
+  </head>
+  <body class="landing">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="l-header" data-header>
+      <nav class="l-nav" aria-label="Main">
+        <a class="brand" href="/" aria-label="Tick home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="10" fill="var(--ink)" />
+            <path d="M16 7.5a8.5 8.5 0 1 1-8.5 8.5" fill="none" stroke="var(--on-ink)" stroke-width="3.2" stroke-linecap="round" />
+            <circle cx="16" cy="16" r="2.6" fill="var(--on-ink)" />
+          </svg>
+          Tick
+        </a>
+        <a class="md-badge" href="/#metricdeck">
+          <svg viewBox="0 0 28 28" aria-hidden="true" class="md-icon"><rect width="28" height="28" rx="6.3" fill="#4f46e5" /><g transform="translate(1.2492307692307678 1.2492307692307683) scale(0.5312820512820513)"><rect x="4.5" y="26" width="7" height="16" rx="3.5" fill="#bdb8fa" /><rect x="14.5" y="16" width="7" height="26" rx="3.5" fill="#bdb8fa" /><path d="M28 6 H29.5 A14 18 0 0 1 29.5 42 H28 A3.5 3.5 0 0 1 24.5 38.5 V9.5 A3.5 3.5 0 0 1 28 6 Z" fill="#ffffff" /></g></svg>
+          <span>by MetricDeck</span>
+        </a>
+        <div class="l-links" data-links>
+          <span class="l-links-hl" aria-hidden="true"></span>
+          <a href="/#how">How it works</a>
+          <a href="/#features">Features</a>
+          <a href="/#security">Security</a>
+          <a href="/#faq">FAQ</a>
+        </div>
+        <a class="l-gh" href="https://github.com/iamsrikanth-dev/tick" target="_blank" rel="noopener" aria-label="Star Tick on GitHub">
+          <svg class="gh-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg><span>Star on GitHub</span>
+        </a>
+        <a class="btn btn-primary l-nav-cta" href="/app" data-app-link>
+          Open Tick
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+        <button class="icon-btn l-menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>
+          <span class="l-burger" aria-hidden="true"><span></span><span></span></span>
+        </button>
+      </nav>
+      <div class="l-mobile-menu" id="mobile-menu" data-menu hidden>
+        <a href="/#how">How it works</a>
+        <a href="/#features">Features</a>
+        <a href="/#security">Security</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/#metricdeck">About MetricDeck</a>
+        <a href="https://github.com/iamsrikanth-dev/tick" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-primary btn-lg" href="/app" data-app-link>Open Tick — it’s free</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="l-hero l-guide" aria-labelledby="hero-title">
+        <a class="pill-label" href="/" data-rise>
+          <span class="dot" aria-hidden="true"></span>
+          Guide · Tick, the free 2FA authenticator
+        </a>
+        <h1 id="hero-title" class="display" data-reveal>An Authy desktop alternative that’s free and open source</h1>
+        <p class="lead" data-rise>Authy’s desktop apps were retired in March 2024. Tick puts two-factor codes back on your computer: type a few letters, press Enter, paste.</p>
+        <div class="l-cta" data-rise>
+          <a class="btn btn-primary btn-lg" href="/app" data-app-link>
+            Open Tick — it’s free
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+          <a class="btn btn-soft btn-lg" href="/#security">How it’s secured</a>
+        </div>
+      </section>
+
+      <article class="l-article">
+        <h2>What happened to Authy desktop?</h2>
+        <p>
+          Twilio ended the Authy apps for Windows, macOS and Linux on 19 March 2024. Authy now runs on phones only, so every
+          sign-in means reaching for your phone again.
+        </p>
+        <p>
+          Tick is a free two-factor authenticator that runs in your browser, on any computer. It makes the same standard codes
+          (TOTP) every site’s “authenticator app” option uses, offline, with nothing to install. Install it from the address bar
+          if you want it in its own window.
+        </p>
+
+        <h2>Why your Authy codes can’t just be exported</h2>
+        <p>
+          Authy doesn’t let you export your accounts’ secret keys to another app. So moving to any other authenticator, Tick
+          included, means setting up the authenticator again on each site. It takes about a minute per account, and you only do
+          it once.
+        </p>
+
+        <h2>Move each account, step by step</h2>
+        <ol>
+          <li><strong>Open Tick</strong> at <a href="/app">tick.metricdeck.app/app</a> and create a master password.</li>
+          <li><strong>On the site</strong> (Google, GitHub, AWS and so on), open its security settings and find two-factor authentication. Choose to set up a new authenticator app, or turn the authenticator off and on again.</li>
+          <li><strong>In Tick</strong>, choose <strong>Add account</strong> and pick <strong>Screen</strong>: Tick reads the QR code straight off your screen. If the site shows only a setup key, use <strong>Key</strong>.</li>
+          <li><strong>Confirm</strong> by typing Tick’s code into the site, and save the new backup codes the site gives you.</li>
+          <li><strong>Keep Authy</strong> until every account is done, then remove the old entries.</li>
+        </ol>
+        <p>Start with the accounts you sign in to most. Those are the ones where a phone in your hand costs the most time.</p>
+
+        <h2>Authy and Tick, side by side</h2>
+        <ul>
+          <li><strong>On your computer:</strong> Tick runs in any modern browser; Authy no longer has a desktop app.</li>
+          <li><strong>Getting a code:</strong> in Tick, type a few letters and press <kbd>Enter</kbd> to copy it.</li>
+          <li><strong>Account:</strong> Tick has none: no phone number, no sign-up. Authy needs a phone number.</li>
+          <li><strong>Sync:</strong> Authy syncs through its cloud. Tick has no cloud: move your codes between browsers with an encrypted backup file.</li>
+          <li><strong>Leaving:</strong> Tick exports everything, encrypted or as plain links, so you’re never locked in.</li>
+          <li><strong>Code:</strong> Tick is open source under the MIT licence.</li>
+        </ul>
+
+        <h2>Keeping your codes safe</h2>
+        <p>
+          Tick encrypts your codes with AES-256-GCM under a key that only your master password unlocks. The encrypted vault
+          stays in your browser, and Tick makes no requests to any server: there isn’t one.
+          <a href="https://github.com/iamsrikanth-dev/tick" target="_blank" rel="noopener">Read the code on GitHub</a>.
+        </p>
+        <div class="l-note">
+          <p><strong>The honest trade-off.</strong></p>
+          <p>
+            Two-factor is strongest when codes live on a different device from your passwords. If you keep both on your
+            computer, use a strong master password and keep each site’s backup codes somewhere safe. There’s no password
+            recovery, by design.
+          </p>
+        </div>
+
+        <h2>Coming from Google Authenticator instead?</h2>
+        <p>
+          That one is quicker: Google Authenticator can export every account in one QR code. See
+          <a href="/google-authenticator-on-pc">Google Authenticator on your PC or Mac</a>.
+        </p>
+        <div class="l-cta">
+          <a class="btn btn-primary btn-lg" href="/app" data-app-link>Open Tick <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+        </div>
+      </article>
+
+      <section id="faq" class="l-section" aria-labelledby="faq-title">
+        <p class="eyebrow" data-rise>FAQ</p>
+        <h2 id="faq-title" class="h1" data-reveal>Questions, answered.</h2>
+        <div class="l-faq">
+          <details data-rise>
+            <summary>Does the Authy desktop app still work?</summary>
+            <p>No. Twilio retired the Authy apps for Windows, macOS and Linux on 19 March 2024 and now supports Authy on phones only.</p>
+          </details>
+          <details data-rise>
+            <summary>Can I import my Authy accounts into Tick?</summary>
+            <p>Not directly: Authy doesn’t export its accounts’ secret keys. Set up the authenticator again on each site and scan the new QR code with Tick. Keep Authy until you’ve moved every account.</p>
+          </details>
+          <details data-rise>
+            <summary>Is Tick free?</summary>
+            <p>Yes. No account, no limits and no ads. It’s open source under the MIT licence and made by MetricDeck.</p>
+          </details>
+          <details data-rise>
+            <summary>Does Tick sync between my computers?</summary>
+            <p>Not through a cloud: Tick has no server. Download an encrypted backup from its settings and restore it in another browser with your master password.</p>
+          </details>
+          <details data-rise>
+            <summary>Is it safe to keep 2FA codes on my computer?</summary>
+            <p>Tick encrypts them under your master password and never sends them anywhere. Keeping codes on the same device as your passwords is less separation than a phone, so use a strong master password and keep your sites’ backup codes safe.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="l-footer">
+      <div class="l-footer-inner">
+        <span class="brand">Tick</span>
+        <p class="small">
+          A free tool by
+          <a class="md-inline" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer"><svg viewBox="0 0 28 28" aria-hidden="true" class="md-icon sm"><rect width="28" height="28" rx="6.3" fill="#4f46e5" /><g transform="translate(1.2492307692307678 1.2492307692307683) scale(0.5312820512820513)"><rect x="4.5" y="26" width="7" height="16" rx="3.5" fill="#bdb8fa" /><rect x="14.5" y="16" width="7" height="26" rx="3.5" fill="#bdb8fa" /><path d="M28 6 H29.5 A14 18 0 0 1 29.5 42 H28 A3.5 3.5 0 0 1 24.5 38.5 V9.5 A3.5 3.5 0 0 1 28 6 Z" fill="#ffffff" /></g></svg>MetricDeck</a>.
+          Your codes are encrypted and stay in your browser. Tick collects no data.
+        </p>
+        <nav class="l-footer-links" aria-label="Footer">
+          <a href="/app" data-app-link>Open Tick</a>
+          <a href="/#security">Security</a>
+          <a href="/#faq">FAQ</a>
+          <a class="l-gh-foot" href="https://github.com/iamsrikanth-dev/tick" target="_blank" rel="noopener"><svg class="gh-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>Star on GitHub</a>
+        </nav>
+        <div class="l-footer-more">
+          <nav aria-label="Guides">
+            <span class="l-footer-label">Guides</span>
+            <a href="/google-authenticator-on-pc">Google Authenticator on PC or Mac</a>
+            <a href="/authy-desktop-alternative">Authy desktop alternative</a>
+          </nav>
+          <nav aria-label="More free tools by MetricDeck">
+            <span class="l-footer-label">More free tools by MetricDeck</span>
+            <a href="https://metricdeck.app/tools/ai-search-checker?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_ai_search_checker">AI search checker</a>
+            <a href="https://metricdeck.app/tools/security-headers?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_security_headers">Security headers checker</a>
+            <a href="https://metricdeck.app/tools/2fa-authenticator?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer_about_tick">About Tick</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
