@@ -1,159 +1,28 @@
 import { metricDeckUrl } from '../brand';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowIcon, DeviceIcon, Mark, OfflineIcon, ShieldIcon } from '../components/icons';
-import { Odometer } from '../components/time';
-import { Monogram } from '../components/ui';
-import { EASE, gsap, prefersReducedMotion, shake, useEntrance, useGSAP, withMotion } from '../gsap';
+import { useState } from 'react';
+import { Mark } from '../components/icons';
+import { shake, useEntrance } from '../gsap';
 import { passwordStrength } from '../lib/util';
 
 const STRENGTH_COLORS = ['var(--danger)', 'var(--danger)', 'var(--danger)', 'var(--ink)', 'var(--success)'];
 
+// The landing page already explains Tick, so the app opens straight on the password step.
 export function SetupScreen({ onCreate }: { onCreate: (password: string) => Promise<void> }) {
-  const [step, setStep] = useState<'welcome' | 'password'>('welcome');
-  const root = useRef<HTMLDivElement>(null);
-
-  // Leaving the welcome hero: lift it away before the password step rises in.
-  const next = () => {
-    const hero = root.current?.querySelector('.auth-hero');
-    if (!hero || prefersReducedMotion()) return setStep('password');
-    gsap.to(hero, { y: -24, autoAlpha: 0, duration: 0.45, ease: 'power2.in', onComplete: () => setStep('password') });
-  };
-
   return (
-    <main className="auth" ref={root}>
+    <main className="auth">
       <header className="auth-top">
-        <span className="brand">
+        <a className="brand" href="/" aria-label="Tick home">
           <Mark />
           Tick
-        </span>
+        </a>
       </header>
-      {step === 'welcome' ? <Welcome onNext={next} /> : <CreatePassword onCreate={onCreate} />}
+      <CreatePassword onCreate={onCreate} />
       <footer className="credit">
         <a href={metricDeckUrl('app_setup')} target="_blank" rel="noopener">
           A free tool by <strong>MetricDeck</strong>
         </a>
       </footer>
     </main>
-  );
-}
-
-function Welcome({ onNext }: { onNext: () => void }) {
-  const scope = useEntrance<HTMLDivElement>();
-  return (
-    <>
-      <div className="auth-hero" ref={scope}>
-        <span className="pill-label" data-rise>
-          <span className="dot" />
-          Private, encrypted, offline
-        </span>
-        <h1 className="display" data-reveal>
-          Your 2FA codes, one keystroke away.
-        </h1>
-        <p className="lead" data-rise>
-          Tick keeps your two-factor codes in this browser. Type a few letters, press Enter, and the code is on your
-          clipboard. No more reaching for your phone.
-        </p>
-        <div data-rise>
-          <button className="btn btn-primary btn-lg" onClick={onNext} autoFocus>
-            Get Started
-            <ArrowIcon />
-          </button>
-        </div>
-        <ul className="features" data-rise>
-          <li>
-            <DeviceIcon />
-            Stays on this device
-          </li>
-          <li>
-            <ShieldIcon />
-            AES-256 encrypted
-          </li>
-          <li>
-            <OfflineIcon />
-            Works offline
-          </li>
-        </ul>
-      </div>
-      <Marquee />
-    </>
-  );
-}
-
-const SERVICES = [
-  ['GitHub', 'work'],
-  ['Google', 'personal'],
-  ['AWS', 'root'],
-  ['Stripe', 'billing'],
-  ['Figma', 'design'],
-  ['Notion', 'team'],
-  ['Vercel', 'deploys'],
-  ['Discord', 'gaming'],
-  ['Cloudflare', 'dns'],
-  ['Linear', 'issues'],
-  ['Slack', 'acme'],
-  ['Dropbox', 'files'],
-] as const;
-
-function demoCode(seed: number, tick: number): string {
-  // Illustrative digits only: a cheap hash so each tile changes on the tick.
-  let x = (seed * 2654435761 + tick * 40503) >>> 0;
-  x ^= x >>> 13;
-  x = Math.imul(x, 0x5bd1e995) >>> 0;
-  return String(x % 1_000_000).padStart(6, '0');
-}
-
-/** Two rows of example tiles drifting in opposite directions, with codes that roll every few seconds. */
-function Marquee() {
-  const scope = useRef<HTMLDivElement>(null);
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const id = setInterval(() => setTick((t) => t + 1), 3200);
-    return () => clearInterval(id);
-  }, []);
-
-  useGSAP(
-    () => {
-      withMotion(() => {
-        gsap.from(scope.current, { autoAlpha: 0, y: 40, duration: 1.4, ease: EASE, delay: 0.5 });
-        const tracks = gsap.utils.toArray<HTMLElement>('.marquee-track');
-        const loops = tracks.map((track, i) =>
-          gsap.fromTo(track, { xPercent: i % 2 ? -50 : 0 }, { xPercent: i % 2 ? 0 : -50, duration: 60, ease: 'none', repeat: -1 }),
-        );
-        const el = scope.current!;
-        const slow = () => loops.forEach((l) => gsap.to(l, { timeScale: 0.2, duration: 0.6 }));
-        const resume = () => loops.forEach((l) => gsap.to(l, { timeScale: 1, duration: 0.6 }));
-        el.addEventListener('pointerenter', slow);
-        el.addEventListener('pointerleave', resume);
-        return () => {
-          el.removeEventListener('pointerenter', slow);
-          el.removeEventListener('pointerleave', resume);
-        };
-      });
-    },
-    { scope },
-  );
-
-  const rows = [SERVICES.slice(0, 6), SERVICES.slice(6)];
-  return (
-    <div className="marquee" ref={scope} aria-hidden="true">
-      {rows.map((row, r) => (
-        <div className="marquee-track" key={r}>
-          {/* Two copies so the loop is seamless at -50%. */}
-          {[...row, ...row].map(([name, label], i) => (
-            <div className="tile" key={i}>
-              <Monogram name={name} size="sm" />
-              <span>
-                <span className="tile-name">{name}</span>
-                <span className="small">{label}</span>
-              </span>
-              <Odometer value={demoCode(r * 100 + (i % row.length) + 7, tick + (i % row.length))} className="tile-code" />
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
   );
 }
 

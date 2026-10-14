@@ -141,10 +141,11 @@ try {
   check('Open Tick leads into the app', true);
 
   // --- Setup ---
-  await page.getByRole('button', { name: 'Get Started' }).waitFor();
+  // First visit opens straight on the password step (the landing page is the welcome).
+  await page.getByLabel('Confirm password').waitFor();
+  check('app skips the welcome hero on first visit', (await page.getByRole('button', { name: 'Get Started' }).count()) === 0);
   await page.waitForTimeout(800);
-  await page.screenshot({ path: SHOTS + '01-welcome.png' });
-  await page.getByRole('button', { name: 'Get Started' }).click();
+  await page.screenshot({ path: SHOTS + '01-create-password.png' });
   await page.getByLabel('Master password', { exact: true }).fill('short');
   await page.getByLabel('Confirm password').fill('short');
   await page.getByRole('button', { name: 'Create Vault' }).click();
@@ -309,11 +310,10 @@ try {
   await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('button', { name: 'Erase Tick on this browser' }).click();
   await page.getByRole('button', { name: 'Erase Everything' }).click();
-  await page.getByRole('button', { name: 'Get Started' }).waitFor();
+  await page.getByLabel('Confirm password').waitFor();
   check('erase returns to setup', true);
 
   // --- Restore from the backup into a fresh vault ---
-  await page.getByRole('button', { name: 'Get Started' }).click();
   await page.getByLabel('Master password', { exact: true }).fill('another password 42');
   await page.getByLabel('Confirm password').fill('another password 42');
   await page.getByRole('button', { name: 'Create Vault' }).click();

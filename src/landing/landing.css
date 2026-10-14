@@ -743,3 +743,59 @@ html.motion body:not(.ready) [data-rise] {
   height: 24px;
   object-fit: contain;
 }
+
+/* GitHub link: a quiet pill in the header, an icon link in the footer. */
+.l-gh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--hairline);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 200ms, transform 300ms var(--ease);
+}
+
+.l-gh:hover {
+  background: var(--soft);
+  transform: translateY(-1px);
+}
+
+.gh-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.l-gh-foot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.l-gh-foot .gh-icon {
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 1000px) {
+  .l-gh span {
+    display: none;
+  }
+  .l-gh {
+    width: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .l-gh {
+    display: none;
+  }
+}
