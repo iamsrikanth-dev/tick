@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
-import { defineConfig, type Plugin } from 'vite';
+import { resolve } from 'node:path';
+import { defineConfig, type Connect, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // Strict CSP for production builds only: the dev server injects inline scripts for HMR.
@@ -30,8 +31,38 @@ function csp(): Plugin {
   };
 }
 
+// The app lives at /app (app.html); the landing page is index.html. Vercel rewrites /app in
+// production (vercel.json); this does the same for the dev and preview servers.
+function appRoute(): Plugin {
+  const rewrite: Connect.NextHandleFunction = (req, _res, next) => {
+    if (req.url === '/app' || req.url?.startsWith('/app?') || req.url === '/app/') {
+      req.url = '/app.html' + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '');
+    }
+    next();
+  };
+  return {
+    name: 'tick-app-route',
+    configureServer(server) {
+      server.middlewares.use(rewrite);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(rewrite);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), csp()],
-  build: { target: 'es2022', sourcemap: false },
+  plugins: [react(), csp(), appRoute()],
+  appType: 'mpa',
+  build: {
+    target: 'es2022',
+    sourcemap: false,
+    rollupOptions: {
+      input: {
+        landing: resolve(__dirname, 'index.html'),
+        app: resolve(__dirname, 'app.html'),
+      },
+    },
+  },
   test: { environment: 'node' },
 });

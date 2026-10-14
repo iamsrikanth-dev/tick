@@ -3,18 +3,386 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Tick — Free 2FA Authenticator for Your Computer, No Phone Needed</title>
+    <meta
+      name="description"
+      content="Get your 2FA codes on your computer: type a few letters, press Enter, paste. Free, encrypted and offline. Your codes never leave your browser."
+    />
+    <link rel="canonical" href="https://tickcodes.metricdeck.app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
-    <meta name="description" content="Your two-factor codes, one keystroke away. Encrypted and stored only in this browser." />
-    <meta name="referrer" content="no-referrer" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tick by MetricDeck" />
+    <meta property="og:url" content="https://tickcodes.metricdeck.app/" />
+    <meta property="og:title" content="Tick — Your 2FA codes, one keystroke away" />
+    <meta
+      property="og:description"
+      content="A free, encrypted authenticator that lives in your browser. Type, press Enter, paste. No phone, no account, no server."
+    />
+    <meta property="og:image" content="https://tickcodes.metricdeck.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tick: your 2FA codes, one keystroke away" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tick — Your 2FA codes, one keystroke away" />
+    <meta name="twitter:description" content="Free, encrypted 2FA codes in your browser. Type, Enter, paste. No phone needed." />
+    <meta name="twitter:image" content="https://tickcodes.metricdeck.app/og.png" />
+
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icon-180.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <title>Tick</title>
+    <link rel="preload" href="/boot.js" as="script" />
+    <script src="/boot.js"></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://metricdeck.app/#org",
+            "name": "MetricDeck",
+            "url": "https://metricdeck.app/"
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://tickcodes.metricdeck.app/#app",
+            "name": "Tick",
+            "alternateName": "Tick 2FA Codes",
+            "url": "https://tickcodes.metricdeck.app/",
+            "applicationCategory": "SecurityApplication",
+            "operatingSystem": "Any modern web browser (Chrome, Edge, Safari, Firefox)",
+            "browserRequirements": "Requires JavaScript and a browser with Web Crypto",
+            "description": "A free two-factor authenticator that runs in your browser. Generates TOTP codes locally, encrypted with your master password. No account, no server, works offline.",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "featureList": [
+              "TOTP codes (RFC 6238) for any two-factor account",
+              "Scan QR codes from your screen, camera or a screenshot",
+              "Import from Google Authenticator, Aegis and 2FAS",
+              "AES-256-GCM encrypted vault with a master password",
+              "Works offline and installs as an app",
+              "Auto-lock and clipboard clearing"
+            ],
+            "publisher": { "@id": "https://metricdeck.app/#org" },
+            "image": "https://tickcodes.metricdeck.app/og.png"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How do I get my 2FA codes on my computer?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Open Tick in your browser, create a master password, then add each account by scanning the QR code from the site's two-factor setup page or by importing from your phone's authenticator. After that, type a few letters of the account name and press Enter to copy the current code."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I move my Google Authenticator codes to my computer?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. In Google Authenticator, choose Transfer accounts, then Export accounts. Tick reads the transfer QR code with your computer's camera or from a photo of it and imports every account at once. Tick also imports Aegis and 2FAS exports."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it safe to keep 2FA codes in the browser?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Tick encrypts your codes with AES-256-GCM using a key derived from your master password, keeps them only in your browser, and never sends them anywhere. The trade-off is that two-factor is strongest when codes live on a different device from your passwords, so use a strong master password and keep your sites' backup codes somewhere safe."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Tick send my codes to a server?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. There is no server and no account. Codes are generated on your device with the standard TOTP algorithm, and the encrypted vault is stored in your browser's IndexedDB. Tick makes no third-party requests and runs no analytics."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Tick work offline?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Two-factor codes are calculated from a secret and the current time, so no connection is needed. Install Tick from your browser's address bar to open it like an app, even without internet."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What happens if I forget my master password?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It cannot be recovered, because only you know it and nothing is stored on a server. Download an encrypted backup from Tick's settings and keep your sites' backup codes, so you can restore access if you ever need to start over."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Tick free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, Tick is completely free with no account and no limits. It is made and maintained by MetricDeck."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script type="module" src="/src/landing/main.ts"></script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="landing">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="l-nav-wrap">
+      <nav class="l-nav" aria-label="Main">
+        <a class="brand" href="/" aria-label="Tick home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="10" fill="var(--ink)" />
+            <path d="M16 7.5a8.5 8.5 0 1 1-8.5 8.5" fill="none" stroke="var(--on-ink)" stroke-width="3.2" stroke-linecap="round" />
+            <circle cx="16" cy="16" r="2.6" fill="var(--on-ink)" />
+          </svg>
+          Tick
+        </a>
+        <div class="l-links">
+          <a href="#how">How it works</a>
+          <a href="#security">Security</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <a class="btn btn-primary" href="/app">Open Tick</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="l-hero" aria-labelledby="hero-title">
+        <a class="pill-label" href="#metricdeck" data-rise>
+          <span class="dot" aria-hidden="true"></span>
+          Free forever · A tool by MetricDeck
+        </a>
+        <h1 id="hero-title" class="display" data-reveal>Your 2FA codes, one keystroke away.</h1>
+        <p class="lead" data-rise>
+          Tick is a free two-factor authenticator for your computer. Type a few letters, press Enter, and the code is on your
+          clipboard. No more reaching for your phone every time you sign in.
+        </p>
+        <div class="l-cta" data-rise>
+          <a class="btn btn-primary btn-lg" href="/app">
+            Open Tick — it’s free
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+          <a class="btn btn-soft btn-lg" href="#security">How it’s secured</a>
+        </div>
+        <ul class="features" data-rise>
+          <li>No account</li>
+          <li>No server</li>
+          <li>Works offline</li>
+          <li>AES-256 encrypted</li>
+        </ul>
+      </section>
+
+      <div class="marquee" aria-hidden="true" data-marquee>
+        <div class="marquee-track" data-codes></div>
+        <div class="marquee-track" data-codes></div>
+      </div>
+
+      <section id="how" class="l-section" aria-labelledby="how-title">
+        <p class="eyebrow" data-rise>How it works</p>
+        <h2 id="how-title" class="h1" data-reveal>Type. Enter. Paste.</h2>
+        <p class="lead l-narrow" data-rise>
+          Signing in shouldn’t mean finding your phone, unlocking it, opening an app and typing six digits before they expire.
+        </p>
+        <ol class="l-steps">
+          <li class="l-card" data-rise>
+            <span class="l-step-visual"><kbd>g</kbd><kbd>i</kbd><kbd>t</kbd></span>
+            <h3 class="headline">Type to find</h3>
+            <p class="body">Start typing anywhere. Tick filters your accounts as you type, so the right one is always one or two letters away.</p>
+          </li>
+          <li class="l-card" data-rise>
+            <span class="l-step-visual"><kbd class="wide">Enter ↵</kbd></span>
+            <h3 class="headline">Press Enter</h3>
+            <p class="body">The current code is copied. If it’s about to expire, Tick hands you the next one so it never runs out mid-paste.</p>
+          </li>
+          <li class="l-card" data-rise>
+            <span class="l-step-visual"><kbd class="wide">⌘V</kbd></span>
+            <h3 class="headline">Paste and you’re in</h3>
+            <p class="body">Paste into the login page. Tick clears the code from your clipboard a few seconds later.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="l-section" aria-labelledby="features-title">
+        <p class="eyebrow" data-rise>Everything you need</p>
+        <h2 id="features-title" class="h1" data-reveal>Small tool. Thought through.</h2>
+        <div class="l-grid">
+          <article class="l-card" data-rise>
+            <h3 class="headline">Scan QR codes off your screen</h3>
+            <p class="body">Setting up two-factor on a site? Tick reads the QR code straight from your screen. No phone, no camera.</p>
+          </article>
+          <article class="l-card" data-rise>
+            <h3 class="headline">Move from Google Authenticator</h3>
+            <p class="body">Export from Google Authenticator and scan the transfer code once. Every account comes across together. Aegis and 2FAS work too.</p>
+          </article>
+          <article class="l-card" data-rise>
+            <h3 class="headline">Works offline, installs like an app</h3>
+            <p class="body">Codes are maths on a secret and the time, so no internet is needed. Install Tick from the address bar and it opens like any other app.</p>
+          </article>
+          <article class="l-card" data-rise>
+            <h3 class="headline">Locks itself</h3>
+            <p class="body">Tick locks after a few minutes away and clears copied codes from your clipboard, so an unattended laptop isn’t an open door.</p>
+          </article>
+          <article class="l-card" data-rise>
+            <h3 class="headline">Fixes a wrong clock</h3>
+            <p class="body">Codes fail when your computer’s clock drifts. Tick notices and corrects for it, so your codes keep working.</p>
+          </article>
+          <article class="l-card" data-rise>
+            <h3 class="headline">Encrypted backups</h3>
+            <p class="body">Download an encrypted backup and restore it on any browser with your master password. Move to another app any time.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="security" class="l-security" aria-labelledby="security-title">
+        <div class="l-security-inner">
+          <p class="eyebrow" data-rise>Security</p>
+          <h2 id="security-title" class="h1" data-reveal>Your codes never leave this browser.</h2>
+          <p class="lead l-narrow" data-rise>
+            Tick has no server and no account. There is nothing to breach, because there is nowhere your codes are sent.
+          </p>
+          <dl class="l-specs">
+            <div data-rise>
+              <dt>Encryption</dt>
+              <dd>AES-256-GCM with a random 256-bit data key</dd>
+            </div>
+            <div data-rise>
+              <dt>Master password</dt>
+              <dd>PBKDF2-SHA256 with 600,000 iterations and a random salt. Never stored.</dd>
+            </div>
+            <div data-rise>
+              <dt>Storage</dt>
+              <dd>One encrypted record in your browser’s IndexedDB. Nothing readable touches disk.</dd>
+            </div>
+            <div data-rise>
+              <dt>Network</dt>
+              <dd>No server, no analytics, no third-party requests. A strict Content Security Policy blocks outside scripts.</dd>
+            </div>
+            <div data-rise>
+              <dt>Codes</dt>
+              <dd>Standard TOTP (RFC 6238), generated on your device and verified against the official test vectors.</dd>
+            </div>
+            <div data-rise>
+              <dt>While unlocked</dt>
+              <dd>The key lives only in memory and is dropped the moment Tick locks.</dd>
+            </div>
+          </dl>
+          <div class="l-tradeoff" data-rise>
+            <h3 class="headline">The honest trade-off</h3>
+            <p>
+              Two-factor is strongest when your codes live on a different device from your passwords. Keeping both in one
+              browser trades a little of that separation for a lot of convenience. If you choose Tick, use a strong master
+              password and keep your sites’ backup codes somewhere safe. There’s no password recovery, by design.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="l-section" aria-labelledby="faq-title">
+        <p class="eyebrow" data-rise>FAQ</p>
+        <h2 id="faq-title" class="h1" data-reveal>Questions, answered.</h2>
+        <div class="l-faq">
+          <details data-rise>
+            <summary>How do I get my 2FA codes on my computer?</summary>
+            <p>
+              Open Tick in your browser, create a master password, then add each account by scanning the QR code from the site’s
+              two-factor setup page or by importing from your phone’s authenticator. After that, type a few letters of the
+              account name and press Enter to copy the current code.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>Can I move my Google Authenticator codes to my computer?</summary>
+            <p>
+              Yes. In Google Authenticator, choose Transfer accounts, then Export accounts. Tick reads the transfer QR code with
+              your computer’s camera or from a photo of it and imports every account at once. Tick also imports Aegis and 2FAS
+              exports.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>Is it safe to keep 2FA codes in the browser?</summary>
+            <p>
+              Tick encrypts your codes with AES-256-GCM using a key derived from your master password, keeps them only in your
+              browser, and never sends them anywhere. The trade-off is that two-factor is strongest when codes live on a
+              different device from your passwords, so use a strong master password and keep your sites’ backup codes
+              somewhere safe.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>Does Tick send my codes to a server?</summary>
+            <p>
+              No. There is no server and no account. Codes are generated on your device with the standard TOTP algorithm, and
+              the encrypted vault is stored in your browser’s IndexedDB. Tick makes no third-party requests and runs no
+              analytics.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>Does Tick work offline?</summary>
+            <p>
+              Yes. Two-factor codes are calculated from a secret and the current time, so no connection is needed. Install Tick
+              from your browser’s address bar to open it like an app, even without internet.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>What happens if I forget my master password?</summary>
+            <p>
+              It cannot be recovered, because only you know it and nothing is stored on a server. Download an encrypted backup
+              from Tick’s settings and keep your sites’ backup codes, so you can restore access if you ever need to start over.
+            </p>
+          </details>
+          <details data-rise>
+            <summary>Is Tick free?</summary>
+            <p>Yes, Tick is completely free with no account and no limits. It is made and maintained by MetricDeck.</p>
+          </details>
+        </div>
+      </section>
+
+      <section id="metricdeck" class="l-section" aria-labelledby="md-title">
+        <div class="l-maker" data-rise>
+          <a class="md-logo" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=maker_section" aria-label="MetricDeck">
+            <img src="/metricdeck-logo.svg" alt="MetricDeck" width="160" height="40" />
+          </a>
+          <h2 id="md-title" class="h1">Made by the team behind MetricDeck.</h2>
+          <p class="lead l-narrow">
+            We built Tick for ourselves because reaching for a phone fifty times a week got old. It’s free, and it stays free.
+            If you like how Tick works, you’ll like what we’re building at MetricDeck.
+          </p>
+          <div class="l-cta">
+            <a class="btn btn-primary btn-lg" href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=maker_cta">
+              Visit MetricDeck
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
+            </a>
+            <a class="btn btn-lg" href="/app">Open Tick</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="l-footer">
+      <div class="l-footer-inner">
+        <span class="brand">Tick</span>
+        <p class="small">
+          A free tool by
+          <a href="https://metricdeck.app/?utm_source=tickcodes&amp;utm_medium=referral&amp;utm_campaign=free_tool&amp;utm_content=footer">MetricDeck</a>.
+          Your codes are encrypted and stay in your browser. Tick collects no data.
+        </p>
+        <nav class="l-footer-links" aria-label="Footer">
+          <a href="/app">Open Tick</a>
+          <a href="#security">Security</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+      </div>
+    </footer>
   </body>
 </html>

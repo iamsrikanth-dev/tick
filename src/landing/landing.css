@@ -1,0 +1,442 @@
+/* Landing page: reuses the app's tokens and components from styles.css. */
+
+.landing {
+  overflow-x: hidden;
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--r-full);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+}
+
+.skip:focus {
+  top: 16px;
+}
+
+.landing a:not(.btn) {
+  color: inherit;
+}
+
+/* Hidden until GSAP animates them in; boot.js adds .motion only when motion is welcome. */
+html.motion [data-reveal],
+html.motion [data-rise] {
+  visibility: hidden;
+}
+
+/* Safety net: if the animation script never runs, show everything after a moment. */
+html.motion body:not(.ready) [data-reveal],
+html.motion body:not(.ready) [data-rise] {
+  animation: reveal-fallback 0s 2.5s forwards;
+}
+
+@keyframes reveal-fallback {
+  to {
+    visibility: visible;
+  }
+}
+
+/* ---------- Nav ---------- */
+
+.l-nav-wrap {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  padding: 0 16px;
+}
+
+.l-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(1120px, 100%);
+  margin: 12px auto 0;
+  padding: 6px 6px 6px 18px;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--soft) 88%, transparent);
+  backdrop-filter: saturate(1.5) blur(20px);
+  -webkit-backdrop-filter: saturate(1.5) blur(20px);
+}
+
+.l-nav .brand {
+  text-decoration: none;
+}
+
+.l-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.l-links a {
+  padding: 10px 14px;
+  border-radius: var(--r-full);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 200ms, background-color 200ms;
+}
+
+.l-links a:hover {
+  color: var(--ink);
+  background: var(--soft-hover);
+}
+
+.l-nav .btn {
+  min-height: 40px;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .l-links {
+    display: none;
+  }
+  .l-nav .btn {
+    margin-left: auto;
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.l-hero {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  width: min(940px, 100% - 32px);
+  margin: 0 auto;
+  padding: clamp(64px, 11vw, 132px) 0 40px;
+  text-align: center;
+}
+
+.l-hero .lead {
+  max-width: 600px;
+}
+
+.l-hero .pill-label {
+  text-decoration: none;
+  transition: background-color 200ms;
+}
+
+.l-hero .pill-label:hover {
+  background: var(--soft-hover);
+}
+
+.l-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.l-cta .btn {
+  text-decoration: none;
+}
+
+.l-hero .features li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.landing .marquee {
+  padding-bottom: 24px;
+  overflow: hidden;
+}
+
+/* ---------- Sections ---------- */
+
+.l-section {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(1120px, 100% - 32px);
+  margin: 0 auto;
+  padding: clamp(72px, 10vw, 128px) 0 0;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.l-narrow {
+  max-width: 620px;
+}
+
+.l-card {
+  padding: 28px;
+  border-radius: var(--r-md);
+  background: var(--soft);
+  text-align: left;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.l-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.l-step-visual {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.l-step-visual kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 52px;
+  height: 52px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--canvas);
+  box-shadow: inset 0 -3px 0 var(--hairline);
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: var(--w-display);
+}
+
+.l-step-visual kbd.wide {
+  font-size: 18px;
+}
+
+.l-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  .l-steps,
+  .l-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Security band (inverse, like Mobbin's footer band) ---------- */
+
+.l-security {
+  margin-top: clamp(72px, 10vw, 128px);
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: 40px;
+  width: min(1200px, 100% - 16px);
+  margin-inline: auto;
+}
+
+.l-security-inner {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(1040px, 100% - 32px);
+  margin: 0 auto;
+  padding: clamp(64px, 9vw, 112px) 0;
+  text-align: center;
+}
+
+.l-security .eyebrow,
+.l-security .lead {
+  color: color-mix(in srgb, var(--on-ink) 66%, transparent);
+}
+
+.l-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: 28px 0 0;
+  text-align: left;
+}
+
+.l-specs > div {
+  padding: 22px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--on-ink) 7%, transparent);
+}
+
+.l-specs dt {
+  font-size: 14px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--on-ink) 66%, transparent);
+}
+
+.l-specs dd {
+  margin: 8px 0 0;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.l-tradeoff {
+  max-width: 720px;
+  margin-top: 20px;
+  padding: 24px 28px;
+  border-radius: var(--r-md);
+  border: 1px solid color-mix(in srgb, var(--on-ink) 16%, transparent);
+  text-align: left;
+}
+
+.l-tradeoff p {
+  margin: 8px 0 0;
+  color: color-mix(in srgb, var(--on-ink) 72%, transparent);
+}
+
+@media (max-width: 860px) {
+  .l-specs {
+    grid-template-columns: 1fr;
+  }
+  .l-security {
+    border-radius: 28px;
+  }
+}
+
+/* ---------- FAQ ---------- */
+
+.l-faq {
+  display: grid;
+  gap: 10px;
+  width: min(780px, 100%);
+  margin-top: 24px;
+  text-align: left;
+}
+
+.l-faq details {
+  border-radius: 20px;
+  background: var(--soft);
+  transition: background-color 200ms;
+}
+
+.l-faq details[open] {
+  background: var(--soft-hover);
+}
+
+.l-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  list-style: none;
+}
+
+.l-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.l-faq summary::after {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 300ms var(--ease);
+}
+
+.l-faq details[open] summary::after {
+  transform: rotate(-135deg) translateY(-3px);
+}
+
+.l-faq details p {
+  margin: 0;
+  padding: 0 24px 22px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ---------- Maker (MetricDeck) ---------- */
+
+.l-maker {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: clamp(48px, 7vw, 80px) 24px;
+  border-radius: 40px;
+  background: var(--soft);
+}
+
+.md-logo img {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* The placeholder wordmark is dark ink; flip it on dark surfaces. Remove if the real logo has color. */
+  .md-logo img {
+    filter: invert(1);
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.l-footer {
+  padding: 72px 16px 40px;
+}
+
+.l-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+
+.l-footer-inner .small {
+  flex: 1;
+  margin: 0;
+  min-width: 240px;
+}
+
+.l-footer-inner .small a {
+  font-weight: 600;
+}
+
+.l-footer-links {
+  display: flex;
+  gap: 18px;
+  font-size: 14px;
+}
+
+.l-footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.l-footer-links a:hover {
+  color: var(--ink);
+}
+
+.landing a.btn:not(.btn-primary) {
+  color: var(--ink);
+}

@@ -1,3 +1,4 @@
+import { metricDeckUrl } from '../brand';
 import { useRef, useState } from 'react';
 import { ArrowIcon, Mark } from '../components/icons';
 import { gsap, prefersReducedMotion, shake, useEntrance } from '../gsap';
@@ -103,6 +104,11 @@ export function UnlockScreen({ onUnlock, onErase }: { onUnlock: (password: strin
           </div>
         )}
       </div>
+      <footer className="credit">
+        <a href={metricDeckUrl('app_unlock')} target="_blank" rel="noopener">
+          A free tool by <strong>MetricDeck</strong>
+        </a>
+      </footer>
     </main>
   );
 }

@@ -1,3 +1,4 @@
+import { metricDeckUrl } from '../brand';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowIcon, DeviceIcon, Mark, OfflineIcon, ShieldIcon } from '../components/icons';
 import { Odometer } from '../components/time';
@@ -27,6 +28,11 @@ export function SetupScreen({ onCreate }: { onCreate: (password: string) => Prom
         </span>
       </header>
       {step === 'welcome' ? <Welcome onNext={next} /> : <CreatePassword onCreate={onCreate} />}
+      <footer className="credit">
+        <a href={metricDeckUrl('app_setup')} target="_blank" rel="noopener">
+          A free tool by <strong>MetricDeck</strong>
+        </a>
+      </footer>
     </main>
   );
 }

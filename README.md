@@ -63,10 +63,28 @@ screen capture.
 - **Netlify / Cloudflare Pages:** build command `npm run build`, output directory `dist`, and copy
   the headers from `vercel.json` into the host's headers file.
 
+## Landing page and MetricDeck
+
+- `/` is a static, crawlable landing page (`index.html`, `src/landing/`) with the SEO metadata,
+  share image (`public/og.png`, regenerate with `node e2e/og.mjs`), structured data (app + FAQ),
+  `robots.txt` and `sitemap.xml`. The app itself lives at `/app` (`app.html`) and is `noindex`.
+- Tick is a free tool by [MetricDeck](https://metricdeck.app). Every link to MetricDeck carries
+  `utm_source=tickcodes` and a `utm_content` naming its placement, so visits show up in
+  MetricDeck's analytics.
+- `public/metricdeck-logo.svg` is a placeholder wordmark. Replace it with the official logo (same
+  file name), and drop the dark-mode `filter: invert(1)` in `src/landing/landing.css` if the real
+  logo has its own dark variant or colors.
+- Production domain: `tickcodes.metricdeck.app`. In Vercel, add the domain under Project →
+  Settings → Domains, then create a `CNAME` record for `tickcodes` pointing to the target Vercel
+  shows. If the domain ever changes, update the canonical, Open Graph and sitemap URLs.
+
 ## Project layout
 
 ```text
+index.html        landing page (static, SEO)
+app.html          the app shell, served at /app
 src/
+  landing/        landing page styles and GSAP scroll animations
   lib/            framework-free core: base32, totp, otpauth, migration (Google Authenticator),
                   importers, crypto (vault), storage (IndexedDB), qr, util
   components/     icons, odometer / ring / rail, sheet, segmented control, toasts

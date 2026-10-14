@@ -2,7 +2,7 @@
   "name": "Tick",
   "short_name": "Tick",
   "description": "Your two-factor codes, one keystroke away.",
-  "start_url": "/",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -7,6 +7,7 @@ import { mergeAccounts, parseImport } from '../lib/importers';
 import { buildOtpauthUri, ImportError } from '../lib/otpauth';
 import type { OtpParams } from '../lib/types';
 import { dateStamp, downloadFile, passwordStrength } from '../lib/util';
+import { metricDeckUrl } from '../brand';
 import { useVault } from '../vault-context';
 
 type Panel = null | 'password' | 'plain' | 'erase' | { backup: VaultRecord };
@@ -204,6 +205,19 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           Codes are generated on this device. Your vault is encrypted with AES-256 using a key derived from your master password,
           and it never leaves this browser.
         </p>
+      </section>
+
+      <section className="section">
+        <h3 className="section-title">About</h3>
+        <div className="group">
+          <a className="group-row" href={metricDeckUrl('app_settings')} target="_blank" rel="noopener">
+            <span className="grow">
+              Tick is a free tool by MetricDeck
+              <span className="sub">Free forever, no account. See what else we’re building.</span>
+            </span>
+            <ChevronIcon className="icon chev" />
+          </a>
+        </div>
       </section>
     </Sheet>
   );

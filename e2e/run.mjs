@@ -74,8 +74,45 @@ try {
   });
   page.on('pageerror', (e) => problems.push(String(e)));
 
+  // --- Landing page: SEO essentials, links, and no CSP violations ---
+  await page.goto(BASE + '/');
+  await page.waitForTimeout(1500);
+  const seo = await page.evaluate(() => ({
+    title: document.title,
+    description: document.querySelector('meta[name="description"]')?.getAttribute('content') ?? '',
+    canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
+    ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content'),
+    h1: document.querySelectorAll('h1').length,
+    jsonld: [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => {
+      try { return JSON.parse(s.textContent)['@graph'].map((n) => n['@type']); } catch { return 'invalid'; }
+    }),
+    faqs: document.querySelectorAll('.l-faq details').length,
+    appLinks: document.querySelectorAll('a[href="/app"]').length,
+    mdLinks: [...document.querySelectorAll('a[href^="https://metricdeck.app/"]')].every((a) => a.href.includes('utm_source=tickcodes')),
+  }));
+  check('landing has title, description, canonical and share image', seo.title.length > 30 && seo.title.length <= 70 && seo.description.length >= 120 && seo.description.length <= 170 && seo.canonical === 'https://tickcodes.metricdeck.app/' && !!seo.ogImage, JSON.stringify(seo));
+  check('landing has one h1 and valid structured data', seo.h1 === 1 && JSON.stringify(seo.jsonld) === JSON.stringify([['Organization', 'WebApplication', 'FAQPage']]), JSON.stringify(seo.jsonld));
+  check('landing links to the app and to MetricDeck with tracking', seo.faqs === 7 && seo.appLinks >= 3 && seo.mdLinks, JSON.stringify(seo));
+  for (const path of ['/robots.txt', '/sitemap.xml', '/og.png']) {
+    const res = await page.request.get(BASE + path);
+    check(`${path} is served`, res.ok());
+  }
+  await page.screenshot({ path: SHOTS + '00-landing.png' });
+  await page.locator('#security').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1600);
+  await page.screenshot({ path: SHOTS + '00b-landing-security.png' });
+  await page.locator('#metricdeck').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1600);
+  await page.screenshot({ path: SHOTS + '00c-landing-metricdeck.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: SHOTS + '00d-landing-mobile.png' });
+  check('landing has no horizontal scroll at 390 px', !(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)));
+  await page.setViewportSize({ width: 1280, height: 860 });
+
   // --- Setup ---
-  await page.goto(BASE);
+  await page.goto(BASE + '/app');
   await page.getByRole('button', { name: 'Get Started' }).waitFor();
   await page.waitForTimeout(800);
   await page.screenshot({ path: SHOTS + '01-welcome.png' });

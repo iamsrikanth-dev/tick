@@ -1,9 +1,9 @@
 // Offline support: the app shell is cached on install and refreshed in the background.
 // Only same-origin GET requests are handled; the vault itself lives in IndexedDB, not here.
-const CACHE = 'tick-v1';
+const CACHE = 'tick-v2';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(['/', '/icon.svg', '/manifest.webmanifest'])));
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(['/app', '/', '/icon.svg', '/manifest.webmanifest'])));
   self.skipWaiting();
 });
 
@@ -23,14 +23,18 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     // Network first for the page so updates arrive; fall back to the cached shell offline.
+    // The app lives at /app and the landing page at /; each is cached under its own path.
+    const key = url.pathname.startsWith('/app') ? '/app' : '/';
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put('/', copy));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(key, copy));
+          }
           return response;
         })
-        .catch(() => caches.match('/')),
+        .catch(() => caches.match(key).then((cached) => cached || caches.match('/app'))),
     );
     return;
   }

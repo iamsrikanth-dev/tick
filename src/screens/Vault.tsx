@@ -1,3 +1,4 @@
+import { metricDeckUrl } from '../brand';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CheckIcon, ClockIcon, CloseIcon, EditIcon, GearIcon, ImageIcon, LinkIcon, LockIcon, Mark, PlusIcon, ScreenIcon, SearchIcon } from '../components/icons';
@@ -267,6 +268,11 @@ export function VaultScreen() {
           </motion.div>
         )}
       </main>
+      <footer className="credit">
+        <a href={metricDeckUrl('app_vault')} target="_blank" rel="noopener">
+          A free tool by <strong>MetricDeck</strong>
+        </a>
+      </footer>
 
       <AddSheet source={addSource} onSourceChange={setAddSource} onClose={() => setAddSource(null)} />
       <EditSheet account={editing} onClose={() => setEditing(null)} />
