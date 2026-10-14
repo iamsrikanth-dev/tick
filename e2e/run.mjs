@@ -134,6 +134,25 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(400);
 
+  // --- Typing in a form survives the once-a-second refresh (focus must not jump) ---
+  await page.getByRole('button', { name: 'Add account' }).first().click();
+  await page.getByRole('button', { name: 'Key' }).click();
+  await page.locator('.sheet').getByLabel('Service', { exact: true }).click();
+  await page.keyboard.type('Pro');
+  await page.waitForTimeout(2300);
+  await page.keyboard.type('ton');
+  await page.locator('.sheet').getByLabel('Account', { exact: true }).click();
+  await page.keyboard.type('me@');
+  await page.waitForTimeout(2300);
+  await page.keyboard.type('proton.me');
+  const formState = await page.evaluate(() => ({
+    focused: document.activeElement?.closest('label')?.textContent?.trim().slice(0, 7),
+    values: [...document.querySelectorAll('.sheet input')].slice(0, 2).map((i) => i.value),
+  }));
+  check('focus and text stay put while codes tick', formState.focused === 'Account' && formState.values.join('|') === 'Proton|me@proton.me', JSON.stringify(formState));
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(400);
+
   // --- Codes on the list match RFC 6238 ---
   const listCode = (await page.locator('.card-wrap', { hasText: 'GitHub' }).locator('.odo').getAttribute('aria-label'))?.replace(' ', '');
   check('list code matches an independent TOTP implementation', listCode === totp(SECRET) || listCode === totp(SECRET, Date.now() - 2000), `${listCode} vs ${totp(SECRET)}`);

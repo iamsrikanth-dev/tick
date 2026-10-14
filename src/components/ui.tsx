@@ -66,6 +66,10 @@ export function Sheet({ open, title, onClose, children, leading }: SheetProps) {
   const titleId = useId();
   const panel = useRef<HTMLDivElement>(null);
   const restoreFocus = useRef<HTMLElement | null>(null);
+  // Parents re-render every second (the codes tick) and pass a fresh onClose each time. Reading it
+  // through a ref keeps the effect below from re-running, which would steal focus mid-typing.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -73,7 +77,7 @@ export function Sheet({ open, title, onClose, children, leading }: SheetProps) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
-        onClose();
+        onCloseRef.current();
       } else if (e.key === 'Tab' && panel.current) {
         // Keep focus inside the sheet while it is open.
         const focusable = panel.current.querySelectorAll<HTMLElement>(
@@ -100,7 +104,7 @@ export function Sheet({ open, title, onClose, children, leading }: SheetProps) {
       window.removeEventListener('keydown', onKey, true);
       restoreFocus.current?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   const hidden = reduced ? { opacity: 0 } : compact ? { y: '100%' } : { opacity: 0, scale: 0.96, y: 12 };
 
