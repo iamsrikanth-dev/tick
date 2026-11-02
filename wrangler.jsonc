@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Static site on Cloudflare Workers: no code, just dist/. Clean paths (/app serves app.html,
+  // /app.html redirects to /app) come from html_handling; headers from public/_headers.
+  "name": "tick",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash" },
+  "routes": [{ "pattern": "tick.metricdeck.app", "custom_domain": true }],
+  "workers_dev": false
+}
