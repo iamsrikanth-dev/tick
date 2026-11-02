@@ -58,10 +58,12 @@ written to `e2e/screenshots/`.
 `dist/` is a static site. Any static host works; the app needs HTTPS for clipboard, camera and
 screen capture.
 
-- **Vercel:** import the repository; `vercel.json` sets the build, output directory, security
-  headers (no framing, HSTS, camera and screen capture limited to this site) and cache rules.
-- **Netlify / Cloudflare Pages:** build command `npm run build`, output directory `dist`, and copy
-  the headers from `vercel.json` into the host's headers file.
+- **Cloudflare Workers** (where tick.metricdeck.app runs): `npm run build`, then `npx wrangler deploy`.
+  `wrangler.jsonc` serves `dist/` with clean paths (`/app` is `app.html`, and `/app.html` redirects
+  to `/app`); `public/_headers` sets the security headers (no framing, HSTS, camera and screen
+  capture limited to this site) and cache rules.
+- **Netlify / Cloudflare Pages:** build command `npm run build`, output directory `dist`; both read
+  `public/_headers` as it is.
 
 ## Landing page and MetricDeck
 
@@ -72,7 +74,7 @@ screen capture.
   `/authy-desktop-alternative` (`google-authenticator-on-pc.html`, `authy-desktop-alternative.html`;
   same header, footer, styles and script as the landing page, each with its own title, description,
   canonical and structured data: article, breadcrumb and FAQ). A new guide needs its file, an entry
-  in `PAGES` (`vite.config.ts`), a rewrite and redirect in `vercel.json`, a line in `sitemap.xml`
+  in `PAGES` (`vite.config.ts`), a line in `sitemap.xml`
   and `llms.txt`, a link in every page's footer, and its slug in `e2e/run.mjs`.
 - `llms.txt` summarises Tick and its pages for AI assistants.
 - Structured data names MetricDeck by the same `@id` metricdeck.app uses
@@ -85,9 +87,8 @@ screen capture.
   `utm_source=tickcodes` and a `utm_content` naming its placement, so visits show up in
   MetricDeck's analytics.
 - The MetricDeck mark is inlined in `index.html` (also saved as `public/metricdeck-icon.svg`).
-- Production domain: `tick.metricdeck.app`. In Vercel, add the domain under Project →
-  Settings → Domains, then create a `CNAME` record for `tick` pointing to the target Vercel
-  shows. If the domain ever changes, update the canonical, Open Graph and sitemap URLs.
+- Production domain: `tick.metricdeck.app`, attached to the Worker by `routes` in `wrangler.jsonc`
+  (Cloudflare creates its DNS record on deploy; metricdeck.app's DNS is on Cloudflare). If the domain ever changes, update the canonical, Open Graph and sitemap URLs.
 
 ## Project layout
 

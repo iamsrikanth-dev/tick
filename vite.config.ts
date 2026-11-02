@@ -31,8 +31,8 @@ function csp(): Plugin {
   };
 }
 
-// Pages served at clean paths (/app → app.html). Vercel rewrites them in production
-// (vercel.json); this does the same for the dev and preview servers.
+// Pages served at clean paths (/app → app.html). Cloudflare does it in production
+// (html_handling in wrangler.jsonc); this does the same for the dev and preview servers.
 const PAGES = ['app', 'google-authenticator-on-pc', 'authy-desktop-alternative'];
 
 function cleanRoutes(): Plugin {
